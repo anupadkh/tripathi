@@ -64,4 +64,4 @@ class Owner(Customer):
 
 class UserSystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
-    owner = models.OneToOneField(Owner, on_delete=models.SET_NULL, null=True)
+    owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True)
