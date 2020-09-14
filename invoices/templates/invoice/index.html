@@ -29,6 +29,7 @@
 				today = NepaliFunctions.GetCurrentBsDate();
 				var eng_place = document.getElementById('engdate');
 				var date_system = "{{ invoice.date | date:'Y-m-d' | default_if_none:''}}";
+				{% if invoice.date %}
 				if (date_system !== ""){
 					today = NepaliFunctions.AD2BS({
 						"year": {{invoice.date | date:'Y'}},
@@ -36,6 +37,7 @@
 						"day":{{invoice.date | date:'d'}}
 					});
 				}
+				{% endif %}
 				if (input.value == "" & eng_place.value == ""){
 					input.value = NepaliFunctions.ConvertDateFormat(today);
 				}
