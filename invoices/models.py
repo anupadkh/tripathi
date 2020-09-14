@@ -10,7 +10,7 @@ class ContactPerson(models.Model):
     def __str__(self):
         return self.name
 
-class Customer(models.Model):
+class CustomerMeta(models.Model):
     name = models.CharField(max_length=300, null=True, blank=True)
     address = models.CharField(max_length=300, null=True, blank=True)
     phone = models.IntegerField(null=True, blank=True)
@@ -20,6 +20,11 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
     
+    
+    class Meta:
+        abstract = True
+
+class Customer(CustomerMeta):
     def remaining_pay(self):
         return sum(self.invoice_set.all().values_list("to_pay", flat=True))
 
@@ -62,7 +67,7 @@ class Items(models.Model):
     tax_include = models.BooleanField()
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
 
-class Owner(Customer):
+class Owner(CustomerMeta):
     info = models.CharField(max_length=100, null=True, blank=True)
 
 class UserSystem(models.Model):
