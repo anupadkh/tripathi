@@ -70,16 +70,16 @@
 					{% for item in items %}
 					<tr>
 						<td><a class="cut">-</a><span contenteditable>1</span></td>
-						<td class="right"><span contenteditable>{{item.density}}</span></td>
-						<td class="right"><span contenteditable>{{item.length}}</span></td>
-						<td class="right"><span contenteditable>{{item.breadth}}</span></td>
-						<td class="right"><span contenteditable>{{item.height}}</span></td>
+						<td class="right"><span contenteditable>{{item.density |floatformat }}</span></td>
+						<td class="right"><span contenteditable>{{item.length |floatformat }}</span></td>
+						<td class="right"><span contenteditable>{{item.breadth |floatformat }}</span></td>
+						<td class="right"><span contenteditable>{{item.height |floatformat }}</span></td>
 						<td class="right"><span contenteditable></span></td>
-						<td class="right"><span contenteditable>{{item.rate}}</span></td>
+						<td class="right"><span contenteditable>{{item.rate |floatformat }}</span></td>
 						<td><span contenteditable>{{item.description}}</span></td>
-						<td class="right"><span data-prefix>रु</span><span contenteditable>{{item.calculated_rate}}</span></td>
-						<td class="right"><span contenteditable>{{item.qty}}</span></td>
-						<td class="right"><span data-prefix>रु</span><span>{{item.price}}</span></td>
+						<td class="right"><span data-prefix>रु</span><span contenteditable>{{item.calculated_rate |floatformat }}</span></td>
+						<td class="right"><span contenteditable>{{item.qty|floatformat }}</span></td>
+						<td class="right"><span data-prefix>रु</span><span>{{item.price|floatformat }}</span></td>
 						<td class="center"><span contenteditable>x</span></td>
 						<td class="center"><span contenteditable>x</span></td>
 						<td style="visibility:hidden;"><span>{{item.id}}</span></td>
