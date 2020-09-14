@@ -228,7 +228,7 @@ function updateInvoice() {
 	invoice['paid'] = cells[1].innerText
 	invoice['tax'] = taxable
 	invoice['discount'] = parseFloatHTML(cells[4])
-	invoice['to_pay'] = parseFloatHTML(cells[5])
+	invoice['to_pay'] = invoice['total'] - invoice['paid'] - invoice['discount']
 	
 	document.getElementById('invoice').value = JSON.stringify(invoice);
 	document.getElementById('items').value = JSON.stringify(items_obj);

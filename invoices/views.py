@@ -22,7 +22,8 @@ def index(request, id=None):
         "owner": owner,
         "items": items,
         "customer" : customer,
-        "unsaved": True
+        "unsaved": True,
+        "due" : customer.remaining_pay()
         }
     if request.method == "POST":
         data = request.POST
@@ -75,7 +76,8 @@ def index(request, id=None):
         "owner": owner,
         "items": items,
         "customer" : customer,
-        "unsaved": False
+        "unsaved": False,
+        "due" : customer.remaining_pay()
         }
         return render(request, 'invoice/index.html', context)
         

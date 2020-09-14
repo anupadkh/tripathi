@@ -23,8 +23,14 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     inline_actions = ['view']
     readonly_fields = ['myview']
 
+    def url(self,obj):
+        try:
+            return reverse('invoices:index_id', kwargs={"id": obj.id})
+        except:
+            return "#"
+
     def myview(self, obj):
-        return mark_safe("<a href=\"/invoice/%s\"> Invoice </a>" % obj.id )
+        return mark_safe("<a href=\"%s\"> Invoice </a>" % self.url(obj) )
     
     def get_form(self, request, obj=None, **kwargs):
         form = super(InvoiceInline, self).get_form(request, obj, **kwargs)

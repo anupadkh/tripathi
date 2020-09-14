@@ -21,7 +21,7 @@ class Customer(models.Model):
         return self.name
     
     def remaining_pay(self):
-        return sum(self.invoice_set.all().values_list(to_pay, flat=True))
+        return sum(self.invoice_set.all().values_list("to_pay", flat=True))
 
 class Invoice(models.Model):
     issued_for = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
