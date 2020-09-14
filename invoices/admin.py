@@ -18,6 +18,7 @@ allowed_list = [
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
+    fields = ('myview','is_posted', 'to_pay', 'total', 'tax', 'paid_amount', 'date')
     extra = 1
     show_change_link = True
     inline_actions = ['view']
