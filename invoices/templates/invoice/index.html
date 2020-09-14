@@ -10,6 +10,21 @@
 		<script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
 	</head>
 	<body>
+		<script>
+			function beforeSubmit(){
+				convert();
+				invoice = document.getElementById("invoice");
+
+				invoice_details = JSON.parse(invoice.value)
+				invoice_details['date'] = document.getElementById("engdate").value
+				invoice_details['notes'] = document.getElementById("notes").innerHTML
+				invoice.value = JSON.stringify(invoice_details)
+				
+				
+				document.getElementById("form").submit();
+				return true;
+			}
+		</script>
 		<header>
 			<h1>Invoice</h1>
 			<address contenteditable>
@@ -170,19 +185,7 @@
 				// }
 				{% if unsaved == False %} window.print(); {% endif %}
 			}
-			function beforeSubmit(){
-				convert();
-				invoice = document.getElementById("invoice");
-
-				invoice_details = JSON.parse(invoice.value)
-				invoice_details['date'] = document.getElementById("engdate").value
-				invoice_details['notes'] = document.getElementById("notes").innerHTML
-				invoice.value = JSON.stringify(invoice_details)
-				
-				
-				document.getElementById("form").submit();
-				return true;
-			}
+			
 			
 		</script>
 	</body>
