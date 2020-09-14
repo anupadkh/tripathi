@@ -10,7 +10,48 @@
 		<script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
 	</head>
 	<body>
-		<script>
+		<script type="text/javascript">
+			function convert(){
+				console.log("registered Change");
+				var input = document.getElementById('nepali-datepicker');
+				nep_date_obj = {
+					"year": parseInt(input.value.split('-')[0]),
+					"month": parseInt(input.value.split('-')[1]),
+					"day": parseInt(input.value.split('-')[2])
+				}
+				var eng_place = document.getElementById('engdate');
+				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
+			}
+			window.onload = function() {
+				// var inputs = document.getElementsByClassName('nepali-datepicker');
+				var input = document.getElementById('nepali-datepicker');
+				input.nepaliDatePicker();
+				today = NepaliFunctions.GetCurrentBsDate();
+				var eng_place = document.getElementById('engdate');
+				var date_system = {{ invoice.date | date:'Y-m-d' | default_if_none:''}};
+				if (date_system !== ""){
+					today = NepaliFunctions.AD2BS({
+						"year": {{invoice.date | date:'Y'}},
+						"month": {{invoice.date | date:'m'}},
+						"day":{{invoice.date | date:'d'}}
+					});
+				}
+				if (input.value == "" & eng_place.value == ""){
+					input.value = NepaliFunctions.ConvertDateFormat(today);
+				}
+				nep_date_obj = {
+					"year": parseInt(input.value.split('-')[0]),
+					"month": parseInt(input.value.split('-')[1]),
+					"day": parseInt(input.value.split('-')[2])
+				}
+				var eng_place = document.getElementById('engdate');
+				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
+
+				// for (var i = 0; i < inputs.length; i++) {
+				// 	inputs[i].nepaliDatePicker();
+				// }
+				{% if unsaved == False %} window.print(); {% endif %}
+			}
 			function beforeSubmit(){
 				convert();
 				invoice = document.getElementById("invoice");
@@ -143,50 +184,9 @@
 			{% if unsaved %} <button style="color:red; background-color: black; padding: 5px;" onclick="beforeSubmit();" type="button">Save & Print</button> {% endif %}
 		</form>
 		
-		<script type="text/javascript">
-			function convert(){
-				console.log("registered Change");
-				var input = document.getElementById('nepali-datepicker');
-				nep_date_obj = {
-					"year": parseInt(input.value.split('-')[0]),
-					"month": parseInt(input.value.split('-')[1]),
-					"day": parseInt(input.value.split('-')[2])
-				}
-				var eng_place = document.getElementById('engdate');
-				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
-			}
-			window.onload = function() {
-				// var inputs = document.getElementsByClassName('nepali-datepicker');
-				var input = document.getElementById('nepali-datepicker');
-				input.nepaliDatePicker();
-				today = NepaliFunctions.GetCurrentBsDate();
-				var eng_place = document.getElementById('engdate');
-				var date_system = {{ invoice.date | date:'Y-m-d' | default_if_none:''}};
-				if (date_system !== ""){
-					today = NepaliFunctions.AD2BS({
-						"year": {{invoice.date | date:'Y'}},
-						"month": {{invoice.date | date:'m'}},
-						"day":{{invoice.date | date:'d'}}
-					});
-				}
-				if (input.value == "" & eng_place.value == ""){
-					input.value = NepaliFunctions.ConvertDateFormat(today);
-				}
-				nep_date_obj = {
-					"year": parseInt(input.value.split('-')[0]),
-					"month": parseInt(input.value.split('-')[1]),
-					"day": parseInt(input.value.split('-')[2])
-				}
-				var eng_place = document.getElementById('engdate');
-				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
-
-				// for (var i = 0; i < inputs.length; i++) {
-				// 	inputs[i].nepaliDatePicker();
-				// }
-				{% if unsaved == False %} window.print(); {% endif %}
-			}
+		
 			
 			
-		</script>
+		
 	</body>
 </html>
