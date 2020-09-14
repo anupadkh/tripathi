@@ -25,10 +25,10 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     readonly_fields = ['myview']
 
     def url(self,obj):
-        try:
+        if obj.id:
             return reverse('invoices:index_id', kwargs={"id": obj.id})
-        except:
-            return "#"
+        else:
+            return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.issued_for.id})
 
     def myview(self, obj):
         return mark_safe("<a href=\"%s\"> Invoice </a>" % self.url(obj) )

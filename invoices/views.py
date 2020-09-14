@@ -5,7 +5,12 @@ from .serializer import *
 import json
 # Create your views here.
 
-def index(request, id=None):
+def index(request, id=None, cs_id=None):
+    if id==0:
+        customer = Customer.objects.get(id=cs_id)
+        invoice = Invoice(issued_for=customer)
+        invoice.save()
+        id = invoice.id
     invoice = Invoice.objects.get(id=id)
     customer = invoice.issued_for
     user = request.user
