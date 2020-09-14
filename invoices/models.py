@@ -24,7 +24,7 @@ class Customer(models.Model):
         return sum(self.invoice_set.all().values_list("to_pay", flat=True))
 
 class Invoice(models.Model):
-    issued_for = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    issued_for = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     issued_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     is_posted = models.BooleanField(default=False)
     total = models.FloatField(null=True, blank=True)
@@ -39,7 +39,10 @@ class Invoice(models.Model):
         try:
             return self.issued_for.name + " " + self.issued_by.name
         except:
-            return self.issued_for.name
+            try:
+                return self.issued_for.name
+            except:
+                return self.total
     
     
 
