@@ -1,0 +1,189 @@
+
+<html> {% load static %}
+	<head>
+		<meta charset="utf-8">
+		<title>Invoice</title>
+		<link rel="stylesheet" href="{% static 'style.css' %}">
+		<link rel="license" href="https://www.opensource.org/licenses/mit-license/">
+		<link href="{% static 'nepali.datepicker.v3.2.min.css' %}" rel="stylesheet" type="text/css"/>
+		<script src="{% static 'run.js' %}"></script>
+		<script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Invoice</h1>
+			<address contenteditable>
+				<p>{{owner.name | default_if_none:''}}</p>
+				<p>{{owner.address | default_if_none:''}}</p>
+				<p>{{owner.phone | default_if_none:''}}</p>
+				{% if owner.contact_person %}
+				<p>Contact Person: {{owner.contact_person.name}}</p>
+				{% endif %}
+			</address>
+			<span><img alt="" src="http://www.jonathantneal.com/examples/invoice/logo.png"><input type="file" accept="image/*"></span>
+		</header>
+		<article>
+			<h1>Recipient</h1>
+			<address contenteditable>
+				<p>{{customer.name | default_if_none:''}}<br>c/o{% if customer.contact_person %} {{customer.contact_person.name}} {% endif %}</p>
+				<p>{{customer.address | default_if_none:''}}</p>
+				<p>{{customer.phone | default_if_none:''}}</p>
+			</address>
+			<table class="meta">
+				<tr>
+					<th><span contenteditable>Invoice #</span></th>
+					<td colspan="2"><span contenteditable>{{invoice.id}}</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Date</span></th>
+					
+					<td><input id="nepali-datepicker" onchange="convert();" /></td>
+					<td><input id="engdate"/>{% if unsaved %}
+						<button onclick="convert()">EngDate</button>
+						{% endif%}</td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Previous Amount Due</span></th>
+					<td colspan="2"><span id="prefix" contenteditable>रु</span><span>600.00</span></td>
+				</tr>
+			</table>
+			<table class="inventory">
+				<thead>
+					<tr>
+						<th><span contenteditable>S.N.</span></th>
+						<th><spancontenteditable>D</span></th>
+						<th><spancontenteditable>L</span></th>
+						<th><spancontenteditable>B</span></th>
+						<th width="30"><spancontenteditable>H</span></th>
+						<th width="40"><spancontenteditable>MM</span></th>
+						<th><spancontenteditable>R</span></th>
+						<th width="120"><span contenteditable>Description</span></th>
+						<th width="60"><span contenteditable>Rate</span></th>
+						<th width="60"><span contenteditable>QTY</span></th>
+						<th width="90"><span contenteditable>Price</span></th>
+						<th width="15"><span contenteditable>Tax</span></th>
+						<th width="15"><span contenteditable>Inc</span></th>
+						<th width="1" style="visibility: hidden;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in items %}
+					<tr>
+						<td><a class="cut">-</a><span contenteditable>1</span></td>
+						<td class="right"><span contenteditable>{{item.density}}</span></td>
+						<td class="right"><span contenteditable>{{item.length}}</span></td>
+						<td class="right"><span contenteditable>{{item.breadth}}</span></td>
+						<td class="right"><span contenteditable>{{item.height}}</span></td>
+						<td class="right"><span contenteditable></span></td>
+						<td class="right"><span contenteditable>{{item.rate}}</span></td>
+						<td><span contenteditable>{{item.description}}</span></td>
+						<td class="right"><span data-prefix>रु</span><span contenteditable>{{item.calculated_rate}}</span></td>
+						<td class="right"><span contenteditable>{{item.qty}}</span></td>
+						<td class="right"><span data-prefix>रु</span><span>{{item.price}}</span></td>
+						<td class="center"><span contenteditable>x</span></td>
+						<td class="center"><span contenteditable>x</span></td>
+						<td style="visibility:hidden;"><span>{{item.id}}</span></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<a class="add">+</a>
+			<table class="balance">
+				<tr>
+					<th><span contenteditable>Total</span></th>
+					<td><span data-prefix>रु</span><span>600.00</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Amount Paid</span></th>
+					<td><span data-prefix>रु</span><span contenteditable>0.00</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>TAX 13%</span></th>
+					<td><span data-prefix>रु</span><span>70.00</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Grand Total</span></th>
+					<td><span data-prefix>रु</span><span>600.00</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Discount</span></th>
+					<td><span data-prefix>रु</span><span contenteditable>0.00</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Balance Due</span></th>
+					<td><span data-prefix>रु</span><span>600.00</span></td>
+				</tr>
+			</table>
+		</article>
+		<aside>
+			<h1><span contenteditable>Additional Notes</span></h1>
+			<div contenteditable id="notes">
+				<p>1.</p>
+			</div>
+		</aside>
+		<form action="{% url 'invoices:index_id' id=id %}" id="form" method="post">
+			<input type="hidden" name="items" id="items" />
+			<input type="hidden" name="invoice" id="invoice" />
+			{% csrf_token %}
+			{% if unsaved %} <button style="color:red; background-color: black; padding: 5px;" onclick="beforeSubmit();" type="button">Save & Print</button> {% endif %}
+		</form>
+		
+		<script type="text/javascript">
+			function convert(){
+				console.log("registered Change");
+				var input = document.getElementById('nepali-datepicker');
+				nep_date_obj = {
+					"year": parseInt(input.value.split('-')[0]),
+					"month": parseInt(input.value.split('-')[1]),
+					"day": parseInt(input.value.split('-')[2])
+				}
+				var eng_place = document.getElementById('engdate');
+				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
+			}
+			window.onload = function() {
+				// var inputs = document.getElementsByClassName('nepali-datepicker');
+				var input = document.getElementById('nepali-datepicker');
+				input.nepaliDatePicker();
+				today = NepaliFunctions.GetCurrentBsDate();
+				var eng_place = document.getElementById('engdate');
+				var date_system = {{ invoice.date | date:'Y-m-d' | default_if_none:''}};
+				if (date_system !== ""){
+					today = NepaliFunctions.AD2BS({
+						"year": {{invoice.date | date:'Y'}},
+						"month": {{invoice.date | date:'m'}},
+						"day":{{invoice.date | date:'d'}}
+					});
+				}
+				if (input.value == "" & eng_place.value == ""){
+					input.value = NepaliFunctions.ConvertDateFormat(today);
+				}
+				nep_date_obj = {
+					"year": parseInt(input.value.split('-')[0]),
+					"month": parseInt(input.value.split('-')[1]),
+					"day": parseInt(input.value.split('-')[2])
+				}
+				var eng_place = document.getElementById('engdate');
+				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
+
+				// for (var i = 0; i < inputs.length; i++) {
+				// 	inputs[i].nepaliDatePicker();
+				// }
+				{% if unsaved == False %} window.print(); {% endif %}
+			}
+			function beforeSubmit(){
+				convert();
+				invoice = document.getElementById("invoice");
+
+				invoice_details = JSON.parse(invoice.value)
+				invoice_details['date'] = document.getElementById("engdate").value
+				invoice_details['notes'] = document.getElementById("notes").innerHTML
+				invoice.value = JSON.stringify(invoice_details)
+				
+				
+				document.getElementById("form").submit();
+				return true;
+			}
+			
+		</script>
+	</body>
+</html>
