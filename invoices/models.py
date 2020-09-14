@@ -63,7 +63,7 @@ class Items(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
 
 class Owner(Customer):
-    pass
+    info = models.CharField(max_length=100, null=True, blank=True)
 
 class UserSystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
