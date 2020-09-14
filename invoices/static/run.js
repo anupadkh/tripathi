@@ -205,7 +205,7 @@ function updateInvoice() {
 				"price":  parseFloatHTML(cells[10]),
 				"taxable":  cells[11].innerText.toUpperCase() === "X",
 				"tax_include":  cells[12].innerText.toUpperCase() ==="X",
-				"id": parseFloatHTML(cells[13])
+				"id": cells[13].innerText
 			}
 		)
 	}
