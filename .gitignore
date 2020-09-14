@@ -1,2 +1,6 @@
-db.sqlite3
-.pyc
+*.pyc
+__pycache__
+**/migrations/
+atomic*
+RPM*
+media
