@@ -76,7 +76,7 @@
 				<p>{{owner.phone | default_if_none:''}}</p>
 				<p>PAN:{{owner.pan | default_if_none:''}}</p>
 				{% if owner.contact_person %}
-				<p>Contact Person: {{owner.contact_person.name}}</p>
+				<p>Billed By: {{user.first_name }} {{user.last_name}}</p>
 				{% endif %}
 			</address>
 			<span><img alt="" src="http://www.jonathantneal.com/examples/invoice/logo.png"><input type="file" accept="image/*"></span>
@@ -178,8 +178,8 @@
 		<aside>
 			<h1><span contenteditable>Additional Notes</span></h1>
 			<div contenteditable id="notes">
-				<p>1.</p>
-			</div>
+				{% if invoice.notes %} {{invoice.notes}} {% else %}1.{% endif %}
+			</div> 
 		</aside>
 		<form action="{% url 'invoices:index_id_csid' id=id cs_id=customer.id %}" id="form" method="post">
 			<input type="hidden" name="items" id="items" />
