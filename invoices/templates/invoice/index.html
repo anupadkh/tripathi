@@ -69,7 +69,7 @@
 			}
 		</script>
 		<header>
-			<h1><a href="/invoices/customer/{{customer.id}}">Invoice</a></h1>
+			<h1><a href="{% url 'admin:invoices_customer_change' object_id=customer.id %}">Invoice</a></h1>
 			<address contenteditable>
 				<p>{{owner.name | default_if_none:''}}</p>
 				<p>{{owner.address | default_if_none:''}}</p>

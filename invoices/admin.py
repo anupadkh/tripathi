@@ -60,6 +60,10 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_person', 'phone', 'pan', 'address']
     inlines = [InvoiceInline, PaymentInline]
 
+    # def get_urls(self):
+    #     urls = super().get_urls() 
+    #     return urls
+
 # Register your models here.
 from .models import *
 from django.apps import apps

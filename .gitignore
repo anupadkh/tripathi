@@ -5,3 +5,5 @@ atomic*
 RPM*
 media
 invoices/__pycache__/admin.cpython-38.pyc
+# remove cached files
+# git rm -r --cached .
