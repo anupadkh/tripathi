@@ -82,6 +82,12 @@
 				<p>Billed By: {{user.first_name }} {{user.last_name}}</p>
 				{% endif %}
 			</address>
+			<form action="{% url 'invoices:index_id_csid' id=id cs_id=customer.id %}" id="form" method="post">
+				<input type="hidden" name="items" id="items" />
+				<input type="hidden" name="invoice" id="invoice" />
+				{% csrf_token %}
+				{% if unsaved %} <button style="color:red; background-color: black; padding: 5px;" onclick="beforeSubmit();" type="button">Save & Print</button> Max Items in Bill: 11 {% endif %}
+			</form>
 			<!-- <span><img alt="" src="http://www.jonathantneal.com/examples/invoice/logo.png"><input type="file" accept="image/*"></span> -->
 		</header>
 		<article>
@@ -149,7 +155,7 @@
 						<td class="right"><span data-prefix>रु</span><span>{{item.price|floatformat }}</span></td>
 						<td class="center"><span contenteditable>{% if item.taxable %}x{% endif %}</span></td>
 						<td class="center"><span contenteditable>{% if item.tax_include %}x{% endif %}</span></td>
-						<td style="visibility:hidden;"><span>{{item.id}}</span></td>
+						<td width="0" style="visibility:hidden;"><span>{{item.id}}</span></td>
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -188,12 +194,6 @@
 				{% if invoice.notes %} {{invoice.notes | safe}} {% else %}1.{% endif %}
 			</div> 
 		</aside>
-		<form action="{% url 'invoices:index_id_csid' id=id cs_id=customer.id %}" id="form" method="post">
-			<input type="hidden" name="items" id="items" />
-			<input type="hidden" name="invoice" id="invoice" />
-			{% csrf_token %}
-			{% if unsaved %} <button style="color:red; background-color: black; padding: 5px;" onclick="beforeSubmit();" type="button">Save & Print</button> {% endif %}
-		</form>
 		
 		
 			
