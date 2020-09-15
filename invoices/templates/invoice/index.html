@@ -73,8 +73,8 @@
 			<address contenteditable>
 				<p>{{owner.name | default_if_none:''}}</p>
 				<p>{{owner.address | default_if_none:''}}</p>
-				<p>{{owner.pan | default_if_none:''}}</p>
-				<p>PAN:{{owner.phone | default_if_none:''}}</p>
+				<p>{{owner.phone | default_if_none:''}}</p>
+				<p>PAN:{{owner.pan | default_if_none:''}}</p>
 				{% if owner.contact_person %}
 				<p>Contact Person: {{owner.contact_person.name}}</p>
 				{% endif %}

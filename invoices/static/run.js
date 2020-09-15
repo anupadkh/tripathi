@@ -221,7 +221,7 @@ function updateInvoice() {
 	cells[2].innerText = taxable;
 	// set balance and meta balance
 	cells[3].innerText = parsePrice(total - parseFloatHTML(cells[1]) + taxable);
-	cells[5].innerText = parseFloatHTML(cells[3]) + due_prev - parseFloatHTML(cells[4])
+	cells[5].innerText = parseFloatHTML(cells[3]) - parseFloatHTML(cells[4])
 	
 	// update objects
 	invoice['total'] = parseFloatHTML(cells[3])
