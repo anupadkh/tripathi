@@ -22,3 +22,6 @@ urlpatterns = [
 ]
 
 app_name="root"
+admin.site.site_header = "Tripathi Foam Industries"
+admin.site.site_title = "Tripathi Foam Admin"
+admin.site.index_title = "Welcome to Tripathi Foam Portal"

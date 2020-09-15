@@ -24,11 +24,12 @@ class PaymentInline(admin.TabularInline):
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
-    fields = ('myview','is_posted', 'to_pay', 'total', 'tax', 'paid_amount', 'date')
+    fields = ('Invoice','is_posted', 'to_pay', 'total', 'tax', 'paid_amount', 'date', 'vat_bill_no')
     extra = 1
     show_change_link = True
     inline_actions = ['view']
     readonly_fields = ['myview']
+    ordering = ('-date',)
 
     def url(self,obj):
         if obj.id:
@@ -37,7 +38,7 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
             return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.issued_for.id})
 
     def myview(self, obj):
-        return mark_safe("<a href=\"%s\"> Invoice </a>" % self.url(obj) )
+        return mark_safe("<a href=\"%s\"> View </a>" % self.url(obj) )
     
     def get_form(self, request, obj=None, **kwargs):
         form = super(InvoiceInline, self).get_form(request, obj, **kwargs)
@@ -58,16 +59,25 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
 class CustomerAdmin(admin.ModelAdmin):
     model = apps.get_model('invoices', model_name='Customer')
     ordering = ('name',)
-    list_display = ['name', 'contact_person', 'phone', 'pan', 'address']
+    list_display = ['name', 'contact_person', 'phone', 'pan', 'address', 'remaining_pay']
     inlines = [InvoiceInline, PaymentInline]
+    readonly_fields = ('addInvoice',)
+    search_fields = ('name',)
+    fieldsets = (
+        (None,
+            { "fields": ('name', )}
+        ), 
+        ("Other Details", 
+            {   
+            'classes': ('collapse',),
+            "fields": ("contact_person", "phone", "pan", "address", )
+            }
+        )
+    )
 
-    # def get_fields(self):
-    #     fields = super().get_fields()
-    #     return fields
+    def addInvoice(self, obj):
+        return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.id})
 
-    # def get_urls(self):
-    #     urls = super().get_urls() 
-    #     return urls
 
 # Register your models here.
 from .models import *

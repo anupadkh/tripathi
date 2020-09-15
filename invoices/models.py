@@ -25,6 +25,10 @@ class CustomerMeta(models.Model):
         abstract = True
 
 class Customer(CustomerMeta):
+
+    def addInvoice(self):
+        return "<a class=\"button\" href=\"%s\">Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
+
     def remaining_pay(self):
         return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
         sum(self.payment_set.all().values_list('amount', flat=True))
@@ -40,6 +44,7 @@ class Invoice(models.Model):
     to_pay = models.FloatField(null=True, blank=True, default=0)
     discount = models.FloatField(null=True, blank=True, default=0)
     notes = models.TextField(blank=True, null=True)
+    vat_bill_no = models.CharField(null=True, blank=True, max_length=500)
 
     def __str__(self):
         try:
@@ -70,6 +75,7 @@ class Items(models.Model):
 
 class Owner(CustomerMeta):
     info = models.CharField(max_length=100, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
 
 class UserSystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
