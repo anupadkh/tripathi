@@ -20,6 +20,7 @@ class PaymentInline(admin.TabularInline):
     model = apps.get_model('invoices', model_name='Payment')
     extra = 1
     show_change_link = True
+    ordering = ('-date',)
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
@@ -59,6 +60,10 @@ class CustomerAdmin(admin.ModelAdmin):
     ordering = ('name',)
     list_display = ['name', 'contact_person', 'phone', 'pan', 'address']
     inlines = [InvoiceInline, PaymentInline]
+
+    # def get_fields(self):
+    #     fields = super().get_fields()
+    #     return fields
 
     # def get_urls(self):
     #     urls = super().get_urls() 
