@@ -52,7 +52,10 @@
 				// for (var i = 0; i < inputs.length; i++) {
 				// 	inputs[i].nepaliDatePicker();
 				// }
-				{% if unsaved == False %} window.print(); {% endif %}
+				{% if unsaved == False %} if (window.print()){
+					location.replace("{% url 'invoices:index_id' id=invoice.id %}");
+				}; 
+				{% endif %}
 			}
 			function beforeSubmit(){
 				convert();
