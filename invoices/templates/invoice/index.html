@@ -178,7 +178,7 @@
 		<aside>
 			<h1><span contenteditable>Additional Notes</span></h1>
 			<div contenteditable id="notes">
-				{% if invoice.notes %} {{invoice.notes}} {% else %}1.{% endif %}
+				{% if invoice.notes %} {{invoice.notes | safe}} {% else %}1.{% endif %}
 			</div> 
 		</aside>
 		<form action="{% url 'invoices:index_id_csid' id=id cs_id=customer.id %}" id="form" method="post">
