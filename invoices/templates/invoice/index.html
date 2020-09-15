@@ -86,7 +86,7 @@
 				<input type="hidden" name="items" id="items" />
 				<input type="hidden" name="invoice" id="invoice" />
 				{% csrf_token %}
-				{% if unsaved %} <button style="color:red; background-color: black; padding: 5px;" onclick="beforeSubmit();" type="button">Save & Print</button> Max Items in Bill: 11 {% endif %}
+				{% if unsaved %} <button style="color:red; background-color: black; padding: 5px;" onclick="beforeSubmit();" type="button">Save & Print</button> <span>Max Items in Bill: 20</span> {% endif %}
 			</form>
 			<!-- <span><img alt="" src="http://www.jonathantneal.com/examples/invoice/logo.png"><input type="file" accept="image/*"></span> -->
 		</header>
