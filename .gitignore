@@ -1,6 +1,7 @@
 db.sqlite3
-.pyc
-__pycache__
+*.pyc
+invoices/__pycache__/*
 atomic*
 RPM*
 media
+invoices/__pycache__/admin.cpython-38.pyc

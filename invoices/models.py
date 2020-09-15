@@ -26,7 +26,8 @@ class CustomerMeta(models.Model):
 
 class Customer(CustomerMeta):
     def remaining_pay(self):
-        return sum(self.invoice_set.all().values_list("to_pay", flat=True))
+        return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
+        sum(self.payment_set.all().values_list('amount', flat=True))
 
 class Invoice(models.Model):
     issued_for = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
@@ -73,3 +74,12 @@ class Owner(CustomerMeta):
 class UserSystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True)
+
+class Payment(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment")))
+    date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return "%s" % self.amount

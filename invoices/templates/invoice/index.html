@@ -69,7 +69,7 @@
 			}
 		</script>
 		<header>
-			<h1>Invoice</h1>
+			<h1><a href="/invoices/customer/{{customer.id}}">Invoice</a></h1>
 			<address contenteditable>
 				<p>{{owner.name | default_if_none:''}}</p>
 				<p>{{owner.address | default_if_none:''}}</p>
@@ -179,7 +179,7 @@
 				<p>1.</p>
 			</div>
 		</aside>
-		<form action="{% url 'invoices:index_id' id=id %}" id="form" method="post">
+		<form action="{% url 'invoices:index_id_csid' id=id cs_id=customer.id %}" id="form" method="post">
 			<input type="hidden" name="items" id="items" />
 			<input type="hidden" name="invoice" id="invoice" />
 			{% csrf_token %}

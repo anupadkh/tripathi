@@ -222,14 +222,14 @@ function updateInvoice() {
 	// set balance and meta balance
 	cells[3].innerText = parsePrice(total - parseFloatHTML(cells[1]) + taxable);
 	cells[5].innerText = parseFloatHTML(cells[3]) + due_prev - parseFloatHTML(cells[4])
-
+	
 	// update objects
-	invoice['total'] = cells[3].innerText
-	invoice['paid'] = cells[1].innerText
+	invoice['total'] = parseFloatHTML(cells[3])
+	invoice['paid'] = parseFloatHTML(cells[1])
 	invoice['tax'] = taxable
 	invoice['discount'] = parseFloatHTML(cells[4])
 	invoice['to_pay'] = invoice['total'] - invoice['paid'] - invoice['discount']
-	
+	console.log(items_obj, invoice)
 	document.getElementById('invoice').value = JSON.stringify(invoice);
 	document.getElementById('items').value = JSON.stringify(items_obj);
 	

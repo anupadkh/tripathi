@@ -5,14 +5,25 @@ from .serializer import *
 import json
 # Create your views here.
 
+def sanitize_floats(x):
+    if type(x) == str:
+        return float(x)
+    else:
+        return x
+
 def index(request, id=None, cs_id=None):
-    if id==0:
+    if id==0 :
         customer = Customer.objects.get(id=cs_id)
         invoice = Invoice(issued_for=customer)
-        invoice.save()
-        id = invoice.id
-    invoice = Invoice.objects.get(id=id)
-    customer = invoice.issued_for
+        if request.method=="POST":
+            invoice.save()
+            id = invoice.id
+    else:
+        invoice = Invoice.objects.get(id=id)
+    if cs_id:
+        customer = Customer.objects.get(id=cs_id)
+    else:
+        customer = invoice.issued_for
     user = request.user
     try:
         owner = Owner.objects.get(usersystem__user = user)
@@ -47,7 +58,7 @@ def index(request, id=None, cs_id=None):
             invoice.save()
             invoice = Invoice.objects.get(id=invoice.id)
         except:
-            context.update({"errors": "Error in Details of Invoice"})
+            context["errors"]= "Error in Details of Invoice"
             return(request, 'invoice/index.html', context)
 
         already_saved_ids = items.values_list('id', flat=True)

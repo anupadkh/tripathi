@@ -13,8 +13,13 @@ from django.utils.safestring import mark_safe
 
 
 allowed_list = [
-    "ContactPerson", "Customer", "Items", "Owner", "Invoice"
+    "ContactPerson", "Customer", "Owner"
     ]
+
+class PaymentInline(admin.TabularInline):
+    model = apps.get_model('invoices', model_name='Payment')
+    extra = 1
+    show_change_link = True
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
@@ -53,7 +58,7 @@ class CustomerAdmin(admin.ModelAdmin):
     model = apps.get_model('invoices', model_name='Customer')
     ordering = ('name',)
     list_display = ['name', 'contact_person', 'phone', 'pan', 'address']
-    inlines = [InvoiceInline, ]
+    inlines = [InvoiceInline, PaymentInline]
 
 # Register your models here.
 from .models import *

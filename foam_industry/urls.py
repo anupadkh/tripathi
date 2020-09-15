@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', admin.site.urls),
-    path('invoice', include('invoices.urls') ),
+    path('', admin.site.urls, name="admin_home"),
+    path('invoice/', include('invoices.urls') ),
 ]
+
+app_name="root"
