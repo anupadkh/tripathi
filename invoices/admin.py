@@ -28,7 +28,7 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     extra = 1
     show_change_link = True
     inline_actions = ['view']
-    readonly_fields = ['myview']
+    readonly_fields = ['Invoice']
     ordering = ('-date',)
 
     def url(self,obj):
@@ -37,7 +37,7 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
         else:
             return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.issued_for.id})
 
-    def myview(self, obj):
+    def Invoice(self, obj):
         return mark_safe("<a href=\"%s\"> View </a>" % self.url(obj) )
     
     def get_form(self, request, obj=None, **kwargs):
