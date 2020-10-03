@@ -89,3 +89,11 @@ class Payment(models.Model):
 
     def __str__(self):
         return "%s" % self.amount
+
+class OpeningBalance(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    date = models.DateField()
+
+    def __str__(self):
+        return "%s : %s" % (customer, amount) 

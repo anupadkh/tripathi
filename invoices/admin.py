@@ -51,7 +51,11 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     #     return redirect(url)
     # view.short_description = "Generate Items"
 
-
+class OpeningInline(admin.TabularInline):
+    model = apps.get_model('invoices', model_name='OpeningBalance')
+    # fields = '__all__'
+    extra = 0
+    ordering=('-date',)
 
 
 
@@ -60,7 +64,7 @@ class CustomerAdmin(admin.ModelAdmin):
     model = apps.get_model('invoices', model_name='Customer')
     ordering = ('name',)
     list_display = ['name', 'contact_person', 'phone', 'pan', 'address', 'remaining_pay']
-    inlines = [InvoiceInline, PaymentInline]
+    inlines = [InvoiceInline, PaymentInline, OpeningInline]
     readonly_fields = ('addInvoice',)
     search_fields = ('name',)
     fieldsets = (
