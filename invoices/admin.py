@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 
-
 allowed_list = [
     "ContactPerson", "Customer", "Owner"
     ]
@@ -21,6 +20,7 @@ class PaymentInline(admin.TabularInline):
     extra = 1
     show_change_link = True
     ordering = ('-date',)
+    classes = ["tab-payment-inline", "collapse"]
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
@@ -30,6 +30,7 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     inline_actions = ['view']
     readonly_fields = ['Invoice']
     ordering = ('-date',)
+    classes = ["tab-invoice-inline","collapse"]
 
     def url(self,obj):
         if obj.id:
@@ -55,7 +56,8 @@ class OpeningInline(admin.TabularInline):
     model = apps.get_model('invoices', model_name='OpeningBalance')
     # fields = '__all__'
     extra = 0
-    ordering=('-date',)
+    classes = ["tab-opening-inline", "collapse"]
+    show_change_link = True
 
 
 
@@ -67,17 +69,27 @@ class CustomerAdmin(admin.ModelAdmin):
     inlines = [InvoiceInline, PaymentInline, OpeningInline]
     readonly_fields = ('addInvoice',)
     search_fields = ('name',)
+    classes = ('extrapretty',)
     fieldsets = (
         (None,
-            { "fields": ('name', )}
+            { "fields": ('name', ),
+            "classes": ["tab-basic",],}
         ), 
         ("Other Details", 
             {   
-            'classes': ('collapse',),
+            'classes': ('collapse', "other"),
             "fields": ("contact_person", "phone", "pan", "address", )
             }
         )
     )
+    save_on_top = True
+    tabs = [
+        ("Payment", ["tab-payment-inline",]),
+        ("Invoices", ["tab-invoice-inline",]),
+        ("Opening", ["tab-opening-inline",]),
+        ("Basic Info", ["tab-basic", "other"])
+    ]
+
 
     def addInvoice(self, obj):
         return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.id})
@@ -110,3 +122,15 @@ for x in apps.get_models():
                     admin.site.register(x)
                 except:
                     pass
+
+
+
+@admin.register(apps.get_model('invoices', model_name='Term'))
+class TermAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(apps.get_model('invoices', model_name='OpeningBalance'))
+class OpeningAdmin(admin.ModelAdmin):
+    list_display = ['customer', 'closing_due', 'term']
+    readonly_fields = [ 'closing_due']
+    

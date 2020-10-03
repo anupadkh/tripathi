@@ -29,9 +29,11 @@ class Customer(CustomerMeta):
     def addInvoice(self):
         return "<a class=\"button\" href=\"%s\">Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
 
+    @property
     def remaining_pay(self):
         return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
-        sum(self.payment_set.all().values_list('amount', flat=True))
+        sum(self.payment_set.all().values_list('amount', flat=True)) + \
+            sum(self.openingbalance_set.all().values_list('amount', flat=True))
 
 class Invoice(models.Model):
     issued_for = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
@@ -90,10 +92,40 @@ class Payment(models.Model):
     def __str__(self):
         return "%s" % self.amount
 
-class OpeningBalance(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    amount = models.FloatField()
-    date = models.DateField()
+class Term(models.Model):
+    start_date = models.DateField()
+    end_date = models.DateField()
+    title = models.CharField(max_length=300)
 
     def __str__(self):
-        return "%s : %s" % (customer, amount) 
+        return self.title
+
+class OpeningBalance(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    amount = models.FloatField("Opening Balance")
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return "%s : %s" % (self.customer.name, self.amount) 
+    
+    class Meta:
+        unique_together=('customer', 'term')
+
+    @property
+    def term_start(self):
+        return self.term.start_date
+    
+    @property
+    def term_emd(self):
+        return self.term.end_date
+    
+    @property
+    def closing_due(self):
+        return sum(self.customer.invoice_set.filter(
+                date__range=[self.term.start_date, self.term.end_date]
+            ).values_list("to_pay", flat=True)) - \
+            sum(self.customer.payment_set.filter(
+                date__range=[self.term.start_date, self.term.end_date]
+            ).values_list('amount', flat=True)) + \
+            self.amount
