@@ -29,11 +29,12 @@ class Customer(CustomerMeta):
     def addInvoice(self):
         return "<a class=\"button\" href=\"%s\">Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
 
-    @property
+    # @property
     def remaining_pay(self):
         return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
-        sum(self.payment_set.all().values_list('amount', flat=True)) + \
-            sum(self.openingbalance_set.all().values_list('amount', flat=True))
+            sum(self.payment_set.all().values_list('amount', flat=True)) + \
+            self.openingbalance_set.all().prefetch_related('term').order_by('term__start_date')[0].amount
+            # sum(self.openingbalance_set.all().values_list('amount', flat=True))
 
 class Invoice(models.Model):
     issued_for = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
