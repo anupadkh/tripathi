@@ -2,5 +2,6 @@ django_rest_framework
 django-admin-row-actions
 django-inline-actions
 django-admin-tools
+django-material-admin
 # Reversing Admin URLS
 # https://docs.djangoproject.com/en/3.1/ref/contrib/admin/#reversing-admin-urls

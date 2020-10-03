@@ -117,7 +117,7 @@ class OpeningBalance(models.Model):
         return self.term.start_date
     
     @property
-    def term_emd(self):
+    def term_end(self):
         return self.term.end_date
     
     @property
