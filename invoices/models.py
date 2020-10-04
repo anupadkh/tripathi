@@ -27,7 +27,7 @@ class CustomerMeta(models.Model):
 class Customer(CustomerMeta):
 
     def addInvoice(self):
-        return "<a class=\"button\" href=\"%s\">Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
+        return "<a class=\"button\" href=\"%s\" target='_blank'>Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
 
     # @property
     def remaining_pay(self):
