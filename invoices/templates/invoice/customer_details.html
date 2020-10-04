@@ -1,0 +1,240 @@
+{% load static anup_tags %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link href="{% static 'dist/css/tabulator.min.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
+    <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
+    <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+    <style>
+        @media print {
+    body{
+        width: 21cm;
+        height: 29.7cm;
+        margin: 10mm 10mm 10mm 10mm; 
+        /* change the margins as you want them to be. */
+   } 
+}
+    </style>
+</head>
+<body>
+    <!-- <div id="example-table"></div> -->
+    <div>{% comment %}
+        <select id="filter-field">
+          <option></option>
+          <option value="name">Name</option>
+          <option value="nep_name">नाम</option>
+          <option value="age">उमेर</option>
+          <option value="days">म्याद समाप्त बाँकी दिन</option>
+          <option value="designation">पद</option>
+        </select>
+      
+        <select id="filter-type">
+            <option value="like">like</option>
+          <option value="=">=</option>
+          <option value="<"><</option>
+          <option value="<="><=</option>
+          <option value=">">></option>
+          <option value=">=">>=</option>
+          <option value="!=">!=</option>
+        </select>
+      
+        <input id="filter-value" type="text" placeholder="Value To Filter">
+        {% endcomment %}
+    </div><div id="print-area">
+        <h1 style="text-align: center;">{{title}}</h1>
+    <table id="example-table" style="width:900px">
+    </table>
+    </div>
+    <div>
+        <button id="print-table">Print Table</button>
+    </div>
+    {% comment %}
+    <form action="{% url 'members:sendsms' %}" method=GET id="formSend">
+        <input type="hidden" name="ids" id="ids">
+        <button type="button" onclick="sendForm();">Send SMS</button>
+    </form>
+    {% endcomment %}
+<script>
+    function convertToNepaliBS(date_string){
+        nep_date_obj = {
+					"year": parseInt(date_string.split('-')[0]),
+					"month": parseInt(date_string.split('-')[1]),
+					"day": parseInt(date_string.split('-')[2])
+				}
+        return NepaliFunctions.ConvertDateFormat(  NepaliFunctions.AD2BS(nep_date_obj));
+    };
+function sendForm() {
+    document.getElementById("ids").value = getSelectedIds()
+    document.getElementById('formSend').submit();
+}
+var tabledata = [
+    {
+        date_eng:"{{opening.term_start|date:'Y-m-d'}}",
+        date_nep:convertToNepaliBS("{{opening.term_start|date:'Y-m-d'}}"),
+        description:"Opening Balance ",
+        debit:{{opening.amount | default_if_none:0}},
+        id: "{{opening.id}}"
+    },
+    {% for invoice in invoices %}
+    {
+        date_eng:"{{invoice.date|date:'Y-m-d'}}",
+        date_nep:convertToNepaliBS("{{invoice.date|date:'Y-m-d'}}"),
+        description:"Invoice no: {{invoice.id}} ",
+        debit:{{invoice.to_pay | default_if_none:0}},
+        id:"inv{{invoice.id}}"
+    },
+    {% endfor %}
+    {% for payment in payments %}
+    {
+        date_eng:"{{payment.date|date:'Y-m-d'}}",
+        date_nep:convertToNepaliBS("{{payment.date|date:'Y-m-d'}}"),
+        description:"{{payment.payment_mode|payment_mode}} Payment",
+        credit:{{payment.amount | default_if_none:0}},
+        id:"pay{{payment.id}}"
+    },
+    {% endfor %}
+];
+
+function Imageshow(cell, formatterParams, onRendered) {
+    return "<img src=\"" +  cell.getValue() +"\">";
+}
+
+function formatRow(row){
+        var data = row.getData(); //get data object for row
+
+        if(parseInt( data.days ) <= 0){
+            row.getElement().style.backgroundColor = "red"; 
+            row.getElement().style.color = "white"; 
+            //apply css change to row element
+        } else if (parseInt(data.days) <= 30) {
+            row.getElement().style.backgroundColor = "yellow"; 
+            row.getElement().style.color = "red"; 
+        } else if (parseInt(data.days) > 30) {
+            row.getElement().style.backgroundColor = "green"; 
+            row.getElement().style.color = "white"; 
+        } 
+    };
+
+var table = new Tabulator("#example-table", {
+    initialSort:[
+        {column: "date_eng", dir:"asc"}
+    ],
+    printAsHtml:true,
+    printHeader:"<h1>{{title}}<h1>",
+    layout:"fitColumns",
+    reactiveData: true,
+    columns:[
+        {formatter:"rowSelection", titleFormatter:"rowSelection", hozAlign:"center", width:20, headerSort:false, cellClick:function(e, cell){
+                cell.getRow().toggleSelect();
+            }
+        },
+        { title: "(मिति इ.स.)" , field:"date_eng", formatter:        'datetime',  formatterParams:{
+            inputFormat:"YYYY-MM-DD",
+            outputFormat:"DD/MM/YYYY",
+            invalidPlaceholder:"(invalid date)",
+         }, hozAlign:"center"
+        },
+        { title: "(मिति)" , field:"date_nep", hozAlign:"center"},
+        { title: "Description(विवरण)", field: "description", widthGrow:2 },
+        { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right" },
+        { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right"},
+        { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1},
+    ],
+});
+table.setData(tabledata);
+
+function update_balance(table_obj){
+    all_data = table_obj.getData();
+    console.log(all_data);
+    all_data.sort(function(a,b){
+        return   new Date(a.date_eng) - new Date(b.date_eng);
+    });
+    console.log(all_data); 
+for (let index = 0; index < all_data.length; index++) {
+    const element = all_data[index];
+    
+    try{
+        balance_new = ((element.debit || 0) - (element.credit || 0) + all_data[index-1].balance || 0)
+    }catch{
+        balance_new = ((element.debit||0) - (element.credit||0))
+        
+    }
+    all_data[index].balance = balance_new;
+    table_obj.updateData([{id: element.id, balance: balance_new }]);
+    console.log(balance_new);
+    
+}
+}
+update_balance(table);
+
+function getSelectedIds(){
+    rows = table.getSelectedRows();
+    var selectedIds = [];
+    rows.forEach(element => {
+        selectedIds.push(element.getData().id);
+    });
+    return selectedIds;
+};
+document.getElementById("print-table").addEventListener("click", function(){
+    divContents = document.getElementById("print-area").innerHTML;
+    var a = window.open(); 
+            a.document.write('<html>');
+            a.document.write(document.getElementsByTagName("head")[0].outerHTML);
+            a.document.write('<body >'); 
+            a.document.write(divContents); 
+            a.document.write('</body></html>');
+            a.document.close();
+            console.log(a)
+            a.print(); 
+});
+{% comment %}
+var fieldEl = document.getElementById("filter-field");
+var typeEl = document.getElementById("filter-type");
+var valueEl = document.getElementById("filter-value");
+
+//Custom filter example
+function customFilter(data){
+    return data.car && data.rating < 3;
+}
+
+//Trigger setFilter function with correct parameters
+function updateFilter(){
+  var filterVal = fieldEl.options[fieldEl.selectedIndex].value;
+  var typeVal = typeEl.options[typeEl.selectedIndex].value;
+
+  var filter = filterVal == "function" ? customFilter : filterVal;
+
+  if(filterVal == "function" ){
+    typeEl.disabled = true;
+    valueEl.disabled = true;
+  }else{
+    typeEl.disabled = false;
+    valueEl.disabled = false;
+  }
+
+  if(filterVal){
+    table.setFilter(filter,typeVal, valueEl.value);
+  }
+}
+
+//Update filters on value change
+document.getElementById("filter-field").addEventListener("change", updateFilter);
+document.getElementById("filter-type").addEventListener("change", updateFilter);
+document.getElementById("filter-value").addEventListener("keyup", updateFilter);
+
+//Clear filters on "Clear Filters" button click
+document.getElementById("filter-clear").addEventListener("click", function(){
+  fieldEl.value = "";
+  typeEl.value = "=";
+  valueEl.value = "";
+
+  table.clearFilter();
+});
+{% endcomment %}
+</script>
+</body>
+</html>

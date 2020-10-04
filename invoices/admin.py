@@ -132,6 +132,10 @@ class TermAdmin(admin.ModelAdmin):
 @admin.register(apps.get_model('invoices', model_name='OpeningBalance'))
 class OpeningAdmin(admin.ModelAdmin):
     list_display = ['customer', 'closing_due', 'term']
-    readonly_fields = [ 'closing_due', 'term_start', 'term_end']
+    readonly_fields = [ 'closing_due', 'term_start', 'term_end', 'print_statement']
     list_filter = ['customer', 'term']
+
+
+    def print_statement(self,obj):
+        return format_html("<a href='%s' target='_blank' class='button'>Open Statement</a>" % reverse('invoices:customer_term', kwargs= {"id":obj.id}))
     

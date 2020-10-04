@@ -125,6 +125,18 @@ class OpeningBalance(models.Model):
     def term_end(self):
         return self.term.end_date
     
+    def invoices(self):
+        return self.customer.invoice_set.filter(
+                date__range=[self.term.start_date, self.term.end_date]
+            )
+    
+    def payments(self):
+        return self.customer.payment_set.filter(
+                date__range=[self.term.start_date, self.term.end_date]
+            )
+    
+    
+    
     @property
     def closing_due(self):
         return sum(self.customer.invoice_set.filter(

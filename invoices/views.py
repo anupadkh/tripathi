@@ -105,3 +105,14 @@ def index(request, id=None, cs_id=None):
 
     return render(request, 'invoice/index.html', context)
 
+def customer_details(request,id):
+    openBal = OpeningBalance.objects.get(id=id)
+    
+    
+    context = {
+        "title": "%s-%s" %(openBal.customer.name , openBal.term.title),
+        "invoices": openBal.invoices,
+        "payments": openBal.payments,
+        "opening": openBal
+    }
+    return render (request, 'invoice/customer_details.html', context=context)
