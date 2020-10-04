@@ -119,6 +119,14 @@ function formatRow(row){
         } 
     };
 
+let currencyparams = {
+                decimal:".",
+                thousand:",",
+                symbol:"रु. ",
+                symbolBefore:"p",
+                precision:false,
+            } 
+
 var table = new Tabulator("#example-table", {
     initialSort:[
         {column: "date_eng", dir:"asc"}
@@ -140,9 +148,9 @@ var table = new Tabulator("#example-table", {
         },
         { title: "(मिति)" , field:"date_nep", hozAlign:"center"},
         { title: "Description(विवरण)", field: "description", widthGrow:2 },
-        { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right" },
-        { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right"},
-        { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1},
+        { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams},
+        { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams},
+        { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams},
     ],
 });
 table.setData(tabledata);

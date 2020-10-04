@@ -35,7 +35,7 @@ class PaymentInline(admin.TabularInline):
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
-    fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total', 'tax', 'vat_bill_no')
+    fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total', 'tax', 'vat_bill_no', 'is_vat')
     extra = 1
     show_change_link = True
     inline_actions = ['view']
