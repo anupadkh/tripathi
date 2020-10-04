@@ -51,7 +51,7 @@ class Invoice(models.Model):
     to_pay = models.FloatField(null=True, blank=True, default=0)
     discount = models.FloatField(null=True, blank=True, default=0)
     notes = models.TextField(blank=True, null=True)
-    vat_bill_no = models.CharField(null=True, blank=True, max_length=500)
+    vat_bill_no = models.CharField( verbose_name="Bill No" ,null=True, blank=True, max_length=500)
     is_vat = models.BooleanField(default=False)
 
     def __str__(self):
