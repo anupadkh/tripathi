@@ -9,6 +9,7 @@ from inline_actions.admin import InlineActionsMixin
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
+from nepali_date.date import NepaliDate
 
 
 allowed_list = [
@@ -21,14 +22,24 @@ class PaymentInline(admin.TabularInline):
     show_change_link = True
     ordering = ('-date',)
     classes = ["tab-payment-inline", "collapse"]
+    fields = ['nep_date', 'amount', 'payment_mode', 'date']
+    readonly_fields = ['nep_date',]
+
+    def nep_date(self, obj):
+        try:
+            # valid_dob = (self.date.split('-'))
+            return NepaliDate.to_nepali_date(obj.date)
+        except:
+            return '-'
+        return
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
-    fields = ('date','Invoice','is_posted', 'to_pay', 'total', 'tax', 'paid_amount',  'vat_bill_no')
+    fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total', 'tax', 'vat_bill_no')
     extra = 1
     show_change_link = True
     inline_actions = ['view']
-    readonly_fields = ['Invoice']
+    readonly_fields = ['Invoice', 'nep_date']
     ordering = ('-date',)
     classes = ["tab-invoice-inline","collapse"]
 
@@ -45,6 +56,14 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
         form = super(InvoiceInline, self).get_form(request, obj, **kwargs)
         form.base_fields['user'] = request.user
         return form
+    
+    def nep_date(self, obj):
+        try:
+            # valid_dob = (self.date.split('-'))
+            return NepaliDate.to_nepali_date(obj.date)
+        except:
+            return '-'
+        return
 
 
     # def view(self, request, obj, parent_obj=None):
@@ -72,7 +91,7 @@ class CustomerAdmin(admin.ModelAdmin):
     classes = ('extrapretty',)
     fieldsets = (
         (None,
-            { "fields": ('name', ),
+            { "fields": ('name', 'addInvoice' ),
             "classes": ["tab-basic",],}
         ), 
         ("Other Details", 
@@ -92,7 +111,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
     def addInvoice(self, obj):
-        return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.id})
+        return format_html("<a class='button' href='%s'>Add New Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.id}))
 
 
 # Register your models here.
