@@ -193,7 +193,7 @@ function updateInvoice() {
 		cells[9 + j].innerText = price.toFixed(2);
 		items_obj.push(
 			{
-				"density": parseFloatHTML(cells[1]),
+				"density": cells[1].innerHTML.toUpperCase(),
 				"length": parseFloatHTML(cells[2]),
 				"breadth": parseFloatHTML(cells[3]),
 				"height": parseFloatHTML(cells[4]),
@@ -205,7 +205,7 @@ function updateInvoice() {
 				"price":  parseFloatHTML(cells[10]),
 				"taxable":  cells[11].innerText.toUpperCase() === "X",
 				"tax_include":  cells[12].innerText.toUpperCase() ==="X",
-				"id": cells[13].innerText
+				"id": cells[13].innerHTML
 			}
 		)
 	}

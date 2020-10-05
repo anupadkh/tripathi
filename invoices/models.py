@@ -67,7 +67,7 @@ class Invoice(models.Model):
 
 
 class Items(models.Model):
-    density = models.FloatField(null=True, blank=True)
+    density = models.CharField(null=True, blank=True, max_length=30)
     length = models.FloatField(null=True, blank=True)
     breadth =models.FloatField(null=True, blank=True)
     height = models.FloatField(null=True, blank=True)
