@@ -111,7 +111,10 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
     def addInvoice(self, obj):
-        return format_html("<a class='button' href='%s'>Add New Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.id}))
+        try:
+            return format_html("<a class='button' href='%s'>Add New Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.id}))
+        except:
+            return "Please save the customer firtst"
 
 
 # Register your models here.
