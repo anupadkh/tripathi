@@ -92,7 +92,7 @@ class UserSystem(models.Model):
 class Payment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     amount = models.FloatField()
-    payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport")))
+    payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport"), (6, "Bank Deposit"), (7, "Goods Returned")))
     date = models.DateField(null=True, blank=True)
 
     def __str__(self):
