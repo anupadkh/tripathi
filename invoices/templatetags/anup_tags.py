@@ -11,5 +11,5 @@ def remove_dash(value):
 
 @register.filter(name="payment_mode")
 def payment_mode(value):
-    y =dict([(1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport")])
+    y =dict([(1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport"), (6, "Bank Deposit"), (7, "Goods Returned")])
     return y[value]
