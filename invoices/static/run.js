@@ -80,7 +80,7 @@ function generateTableRow() {
 		'<td class="right"><span contenteditable>1</span></td>' +
 		'<td class="right"><span data-prefix>रु</span><span>0.00</span></td>' +
     '<td class="center"><span contenteditable>x</span></td>' +
-    '<td class="center"><span contenteditable>x</span></td>' +
+    '<td class="center"><span contenteditable></span></td>' +
 		'<td width="0" style="visibility:collapse;"><span></span></td>'
     ;
 
