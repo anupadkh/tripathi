@@ -22,7 +22,7 @@ class PaymentInline(admin.TabularInline):
     show_change_link = True
     ordering = ('-date',)
     classes = ["tab-payment-inline", "collapse"]
-    fields = ['nep_date', 'amount', 'payment_mode', 'date']
+    fields = ['nepali_date', 'amount', 'payment_mode', 'nep_date', 'date']
     readonly_fields = ['nep_date',]
 
     def nep_date(self, obj):
@@ -51,12 +51,12 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
 
     def Invoice(self, obj):
         return mark_safe("<a href=\"%s\"> View </a>" % self.url(obj) )
-    
+
     def get_form(self, request, obj=None, **kwargs):
         form = super(InvoiceInline, self).get_form(request, obj, **kwargs)
         form.base_fields['user'] = request.user
         return form
-    
+
     def nep_date(self, obj):
         try:
             # valid_dob = (self.date.split('-'))
@@ -93,9 +93,9 @@ class CustomerAdmin(admin.ModelAdmin):
         (None,
             { "fields": ('name', 'addInvoice' ),
             "classes": ["tab-basic",],}
-        ), 
-        ("Other Details", 
-            {   
+        ),
+        ("Other Details",
+            {
             'classes': ('collapse', "other"),
             "fields": ("contact_person", "phone", "pan", "address", )
             }
@@ -160,4 +160,3 @@ class OpeningAdmin(admin.ModelAdmin):
 
     def print_statement(self,obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Statement</a>" % reverse('invoices:customer_term', kwargs= {"id":obj.id}))
-    

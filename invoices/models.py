@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from nepali_date.date import NepaliDate
 # Create your models here.
 
 class ContactPerson(models.Model):
@@ -19,8 +20,8 @@ class CustomerMeta(models.Model):
 
     def __str__(self):
         return self.name
-    
-    
+
+
     class Meta:
         abstract = True
 
@@ -62,8 +63,8 @@ class Invoice(models.Model):
                 return self.issued_for.name
             except:
                 return self.total
-    
-    
+
+
 
 
 class Items(models.Model):
@@ -94,9 +95,15 @@ class Payment(models.Model):
     amount = models.FloatField()
     payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport"), (6, "Bank Deposit"), (7, "Goods Returned")))
     date = models.DateField(null=True, blank=True)
+    nepali_date = models.CharField(blank=True, max_length=20, default="")
 
     def __str__(self):
         return "%s" % self.amount
+
+    def save(self, *args, **kwargs):
+        if self.nepali_date != "":
+            self.date = NepaliDate.to_english_date(NepaliDate(*self.nepali_date.split('-')))
+        super(Payment, self).save(*args, **kwargs)
 
 class Term(models.Model):
     start_date = models.DateField()
@@ -113,31 +120,31 @@ class OpeningBalance(models.Model):
 
 
     def __str__(self):
-        return "%s : %s" % (self.customer.name, self.amount) 
-    
+        return "%s : %s" % (self.customer.name, self.amount)
+
     class Meta:
         unique_together=('customer', 'term')
 
     @property
     def term_start(self):
         return self.term.start_date
-    
+
     @property
     def term_end(self):
         return self.term.end_date
-    
+
     def invoices(self):
         return self.customer.invoice_set.filter(
                 date__range=[self.term.start_date, self.term.end_date]
             )
-    
+
     def payments(self):
         return self.customer.payment_set.filter(
                 date__range=[self.term.start_date, self.term.end_date]
             )
-    
-    
-    
+
+
+
     @property
     def closing_due(self):
         return sum(self.customer.invoice_set.filter(
