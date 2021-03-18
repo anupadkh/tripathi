@@ -76,7 +76,7 @@ var tabledata = [
         date_eng:"{{opening.term_start|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{opening.term_start|date:'Y-m-d'}}"),
         description:"Opening Balance ",
-        debit:{{opening.amount | default_if_none:0}},
+        debit:{{opening.amount | floatformat:2 | default_if_none:0}},
         id: "{{opening.id}}"
     },
     {% for invoice in invoices %}
