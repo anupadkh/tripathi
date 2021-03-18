@@ -14,9 +14,9 @@
     body{
         width: 21cm;
         height: 29.7cm;
-        margin: 10mm 10mm 10mm 10mm; 
+        margin: 10mm 10mm 10mm 10mm;
         /* change the margins as you want them to be. */
-   } 
+   }
 }
     </style>
 </head>
@@ -31,7 +31,7 @@
           <option value="days">म्याद समाप्त बाँकी दिन</option>
           <option value="designation">पद</option>
         </select>
-      
+
         <select id="filter-type">
             <option value="like">like</option>
           <option value="=">=</option>
@@ -41,7 +41,7 @@
           <option value=">=">>=</option>
           <option value="!=">!=</option>
         </select>
-      
+
         <input id="filter-value" type="text" placeholder="Value To Filter">
         {% endcomment %}
     </div><div id="print-area">
@@ -84,7 +84,7 @@ var tabledata = [
         date_eng:"{{invoice.date|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{invoice.date|date:'Y-m-d'}}"),
         description:"Bill no. {{invoice.vat_no}}, Invoice no: {{invoice.id}} ",
-        debit:{{invoice.to_pay | default_if_none:0}},
+        debit:{{invoice.to_pay | floatformat:2 | default_if_none:0 }},
         id:"inv{{invoice.id}}"
     },
     {% endfor %}
@@ -93,7 +93,7 @@ var tabledata = [
         date_eng:"{{payment.date|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{payment.date|date:'Y-m-d'}}"),
         description:"{{payment.payment_mode|payment_mode}} Payment",
-        credit:{{payment.amount | default_if_none:0}},
+        credit:{{payment.amount | floatformat:2 | default_if_none:0}},
         id:"pay{{payment.id}}"
     },
     {% endfor %}
@@ -107,16 +107,16 @@ function formatRow(row){
         var data = row.getData(); //get data object for row
 
         if(parseInt( data.days ) <= 0){
-            row.getElement().style.backgroundColor = "red"; 
-            row.getElement().style.color = "white"; 
+            row.getElement().style.backgroundColor = "red";
+            row.getElement().style.color = "white";
             //apply css change to row element
         } else if (parseInt(data.days) <= 30) {
-            row.getElement().style.backgroundColor = "yellow"; 
-            row.getElement().style.color = "red"; 
+            row.getElement().style.backgroundColor = "yellow";
+            row.getElement().style.color = "red";
         } else if (parseInt(data.days) > 30) {
-            row.getElement().style.backgroundColor = "green"; 
-            row.getElement().style.color = "white"; 
-        } 
+            row.getElement().style.backgroundColor = "green";
+            row.getElement().style.color = "white";
+        }
     };
 
 let currencyparams = {
@@ -125,7 +125,7 @@ let currencyparams = {
                 symbol:"रु. ",
                 symbolBefore:"p",
                 precision:false,
-            } 
+            }
 
 var table = new Tabulator("#example-table", {
     initialSort:[
@@ -161,20 +161,20 @@ function update_balance(table_obj){
     all_data.sort(function(a,b){
         return   new Date(a.date_eng) - new Date(b.date_eng);
     });
-    console.log(all_data); 
+    console.log(all_data);
 for (let index = 0; index < all_data.length; index++) {
     const element = all_data[index];
-    
+
     try{
         balance_new = ((element.debit || 0) - (element.credit || 0) + all_data[index-1].balance || 0)
     }catch{
         balance_new = ((element.debit||0) - (element.credit||0))
-        
+
     }
     all_data[index].balance = balance_new;
     table_obj.updateData([{id: element.id, balance: balance_new }]);
     console.log(balance_new);
-    
+
 }
 }
 update_balance(table);
@@ -189,15 +189,15 @@ function getSelectedIds(){
 };
 document.getElementById("print-table").addEventListener("click", function(){
     divContents = document.getElementById("print-area").innerHTML;
-    var a = window.open(); 
+    var a = window.open();
             a.document.write('<html>');
             a.document.write(document.getElementsByTagName("head")[0].outerHTML);
-            a.document.write('<body >'); 
-            a.document.write(divContents); 
+            a.document.write('<body >');
+            a.document.write(divContents);
             a.document.write('</body></html>');
             a.document.close();
             console.log(a)
-            a.print(); 
+            a.print();
 });
 {% comment %}
 var fieldEl = document.getElementById("filter-field");

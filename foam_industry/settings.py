@@ -61,6 +61,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foam_industry.urls'
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000000
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
