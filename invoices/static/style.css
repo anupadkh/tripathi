@@ -17,6 +17,10 @@
 	vertical-align: top;
 }
 
+address > p{
+	font-size: 14px;
+}
+
 /* content editable */
 
 *[contenteditable] { border-radius: 0.25em; min-width: 1em; outline: 0; }
@@ -34,13 +38,13 @@ h1 { font: bold 100% sans-serif; letter-spacing: 0.5em; text-align: center; text
 /* table */
 td.right{
 	text-align: right;
-  }  
+  }
 table { font-size: 75%; table-layout: fixed; width: 100%; }
 table { border-collapse: separate; border-spacing: 2px; }
 th, td { border-width: 1px; padding: 0.4em; position: relative; text-align: left; }
 th, td { border-radius: 0.25em; border-style: solid; }
 th { background: #EEE; border-color: #BBB; }
-td { border-color: #DDD; word-break: break-word;} 
+td { border-color: #DDD; word-break: break-word;}
 
 /* page */
 
