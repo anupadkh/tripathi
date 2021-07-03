@@ -22,7 +22,8 @@
 </head>
 <body>
     <!-- <div id="example-table"></div> -->
-    <div>{% comment %}
+    <div>
+    {% comment %}
         <select id="filter-field">
           <option></option>
           <option value="name">Name</option>
@@ -43,8 +44,9 @@
         </select>
 
         <input id="filter-value" type="text" placeholder="Value To Filter">
-        {% endcomment %}
-    </div><div id="print-area">
+    {% endcomment %}
+    </div>
+    <div id="print-area">
         <h1 style="text-align: center;">{{title}}</h1>
     <table id="example-table" style="width:900px">
     </table>
@@ -52,12 +54,14 @@
     <div>
         <button id="print-table">Print Table</button>
     </div>
+
     {% comment %}
     <form action="{% url 'members:sendsms' %}" method=GET id="formSend">
         <input type="hidden" name="ids" id="ids">
         <button type="button" onclick="sendForm();">Send SMS</button>
     </form>
     {% endcomment %}
+
 <script>
     function convertToNepaliBS(date_string){
         nep_date_obj = {
@@ -127,6 +131,15 @@ let currencyparams = {
                 precision:false,
             }
 
+function total(values, data){
+  return "TOTAL";
+}
+
+function final(values, data){
+
+  return values[values.length -1 ];
+}
+
 var table = new Tabulator("#example-table", {
     initialSort:[
         {column: "date_eng", dir:"asc"}
@@ -147,21 +160,21 @@ var table = new Tabulator("#example-table", {
          }, hozAlign:"center"
         },
         { title: "(मिति)" , field:"date_nep", hozAlign:"center"},
-        { title: "Description(विवरण)", field: "description", widthGrow:2 },
-        { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams},
-        { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams},
-        { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams},
+        { title: "Description(विवरण)", field: "description", widthGrow:2, bottomCalc:total },
+        { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum"},
+        { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum"},
+        { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams, bottomCalc:final},
     ],
 });
 table.setData(tabledata);
 
 function update_balance(table_obj){
     all_data = table_obj.getData();
-    console.log(all_data);
+    // console.log(all_data);
     all_data.sort(function(a,b){
         return   new Date(a.date_eng) - new Date(b.date_eng);
     });
-    console.log(all_data);
+    // console.log(all_data);
 for (let index = 0; index < all_data.length; index++) {
     const element = all_data[index];
 
@@ -173,7 +186,7 @@ for (let index = 0; index < all_data.length; index++) {
     }
     all_data[index].balance = balance_new;
     table_obj.updateData([{id: element.id, balance: balance_new }]);
-    console.log(balance_new);
+    // console.log(balance_new);
 
 }
 }
@@ -196,7 +209,7 @@ document.getElementById("print-table").addEventListener("click", function(){
             a.document.write(divContents);
             a.document.write('</body></html>');
             a.document.close();
-            console.log(a)
+            // console.log(a)
             a.print();
 });
 {% comment %}
