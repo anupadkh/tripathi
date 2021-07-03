@@ -136,8 +136,14 @@ function total(values, data){
 }
 
 function final(values, data){
-
+ try {
   return values[values.length -1 ];
+ } catch (e) {
+  return "Not loaded values";
+ } finally {
+   return "Not loaded values"
+ }
+
 }
 
 var table = new Tabulator("#example-table", {

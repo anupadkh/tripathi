@@ -115,12 +115,20 @@ class Term(models.Model):
 
 class OpeningBalance(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    amount = models.FloatField("Opening Balance")
+    amount = models.FloatField("Opening Balance",) # blank=True, null=True)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
 
 
     def __str__(self):
         return "%s : %s" % (self.customer.name, self.amount)
+
+    # def save(self, *args, **kwargs):
+    #     if self.amount == NULL  :
+    #         if ('amount' in kwargs ) & kwargs['amount'] == NULL:
+    #             self.amount = self.customer.remaining_pay()
+    #
+    #
+    #     super(OpeningBalance, self).save(*args, **kwargs)
 
     class Meta:
         unique_together=('customer', 'term')
