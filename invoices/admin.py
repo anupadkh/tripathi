@@ -86,9 +86,10 @@ class CustomerAdmin(admin.ModelAdmin):
     ordering = ('name',)
     list_display = ['name', 'contact_person', 'phone', 'pan', 'address', 'remaining_pay']
     inlines = [InvoiceInline, PaymentInline, OpeningInline]
-    readonly_fields = ('addInvoice',)
-    search_fields = ('name',)
+    readonly_fields = ('addInvoice', )
+    search_fields = ('name','address', 'phone','pan')
     classes = ('extrapretty',)
+    admin_order_field = ('remaining_pay',)
     fieldsets = (
         (None,
             { "fields": ('name', 'addInvoice' ),
@@ -149,13 +150,31 @@ for x in apps.get_models():
 
 @admin.register(apps.get_model('invoices', model_name='Term'))
 class TermAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['title','start_date', 'end_date', 'total_due', 'total_sales' ]
+    readonly_fields = ('total_due', 'total_sales')
+
+    def total_due(self, obj):
+        balances = OpeningBalance.objects.filter(term=obj)
+        total_due_amount = 0
+        for x in balances:
+            total_due_amount += x.closing_due
+        return "NPR {:,.2f}".format(total_due_amount)
+
+    def total_sales(self,obj):
+        balances = OpeningBalance.objects.filter(term=obj)
+        total_sales_amount = 0
+        for x in balances:
+            total_sales_amount += x.total_sales
+        return "NPR {:,.2f}".format(total_sales_amount)
+
+
 
 @admin.register(apps.get_model('invoices', model_name='OpeningBalance'))
 class OpeningAdmin(admin.ModelAdmin):
     list_display = ['customer', 'closing_due', 'term']
     readonly_fields = [ 'closing_due', 'term_start', 'term_end', 'print_statement']
     list_filter = ['customer', 'term']
+    search_fields = ('customer__name',)
 
 
     def print_statement(self,obj):

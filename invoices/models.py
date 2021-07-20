@@ -31,6 +31,13 @@ class Customer(CustomerMeta):
         return "<a class=\"button\" href=\"%s\" target='_blank'>Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
 
     # @property
+    @property
+    def pay_remains(self):
+        try:
+            return self.remaining_pay()
+        except:
+            return "NA"
+
     def remaining_pay(self):
         try:
             return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
@@ -162,3 +169,15 @@ class OpeningBalance(models.Model):
                 date__range=[self.term.start_date, self.term.end_date]
             ).values_list('amount', flat=True)) + \
             self.amount
+
+    @property
+    def total_sales(self):
+        return sum(self.customer.invoice_set.filter(
+                date__range=[self.term.start_date, self.term.end_date]
+            ).values_list("to_pay", flat=True))
+
+    @property
+    def total_pay(self):
+        return sum(self.customer.payment_set.filter(
+            date__range=[self.term.start_date, self.term.end_date]
+        ).values_list('amount', flat=True))
