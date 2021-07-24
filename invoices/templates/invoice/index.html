@@ -136,7 +136,7 @@
 						<th width="90"><span contenteditable>Price</span></th>
 						<th width="15"><span contenteditable>Tax</span></th>
 						<th width="15"><span contenteditable>Inc</span></th>
-						<th width="0" style="visibility: hidden; "></th>
+						<th width="0" style="visibility: hidden; display:none"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -155,7 +155,7 @@
 						<td class="right"><span data-prefix>रु</span><span>{{item.price|floatformat }}</span></td>
 						<td class="center"><span contenteditable>{% if item.taxable %}x{% endif %}</span></td>
 						<td class="center"><span contenteditable>{% if item.tax_include %}x{% endif %}</span></td>
-						<td width="0" style="visibility:hidden;"><span>{{item.id}}</span></td>
+						<td width="0" style="visibility:hidden; display:none"><span>{{item.id}}</span></td>
 					</tr>
 					{% endfor %}
 				</tbody>
