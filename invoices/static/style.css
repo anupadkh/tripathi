@@ -51,7 +51,7 @@ td { border-color: #DDD; word-break: break-word;}
 html { font: 16px/1 'Open Sans', sans-serif; overflow: auto; padding: 0.5in; }
 html { background: #999; cursor: default; }
 
-body { box-sizing: border-box; height: 11in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }
+body { box-sizing: border-box; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }
 body { background: #FFF; border-radius: 1px; box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5); }
 
 /* header */
@@ -155,4 +155,7 @@ tr:hover .cut { opacity: 1; }
 	.add, .cut { display: none; }
 }
 
-@page { margin: 0; }
+@page {
+	margin-top: .5in;
+	body{padding-top:0in;}
+}

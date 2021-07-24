@@ -54,7 +54,7 @@
 				// }
 				{% if unsaved == False %} if (window.print()){
 					location.replace("{% url 'invoices:index_id' id=invoice.id %}");
-				}; 
+				};
 				{% endif %}
 			}
 			function beforeSubmit(){
@@ -66,8 +66,8 @@
 				invoice_details['date'] = document.getElementById("engdate").value
 				invoice_details['notes'] = document.getElementById("notes").innerHTML
 				invoice.value = JSON.stringify(invoice_details)
-				
-				
+
+
 				document.getElementById("form").submit();
 				return true;
 			}
@@ -105,7 +105,7 @@
 				</tr>
 				<tr>
 					<th><span contenteditable>Date</span></th>
-					
+
 					<td><input id="nepali-datepicker" onchange="convert();" /></td>
 					<td><input id="engdate"/>{% if unsaved %}
 						<button onclick="convert()">EngDate</button>
@@ -136,7 +136,7 @@
 						<th width="90"><span contenteditable>Price</span></th>
 						<th width="15"><span contenteditable>Tax</span></th>
 						<th width="15"><span contenteditable>Inc</span></th>
-						<th width="0" style="visibility: hidden;"></th>
+						<th width="0" style="visibility: hidden; "></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -192,12 +192,12 @@
 			<h1><span contenteditable>Additional Notes</span></h1>
 			<div contenteditable id="notes">
 				{% if invoice.notes %} {{invoice.notes | safe}} {% else %}1.{% endif %}
-			</div> 
+			</div>
 		</aside>
-		
-		
-			
-			
-		
+
+
+
+
+
 	</body>
 </html>
