@@ -99,6 +99,16 @@ class OpeningInline(admin.TabularInline):
     classes = ["tab-opening-inline", "collapse"]
     show_change_link = True
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        UserMode = apps.get_model('invoices', model_name='UserSystem')
+        if UserMode.objects.get(user=request.user).default_term == 1:
+            return qs
+        a,b, object_id = resolve(request.path)
+        op_bal = apps.get_model('invoices', model_name='OpeningBalance')
+        op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+        return qs.filter(id=op_bal_reqd.id)
+
 
 
 @admin.register(apps.get_model('invoices', model_name='Customer'))
