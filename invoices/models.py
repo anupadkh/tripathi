@@ -89,6 +89,9 @@ class Owner(CustomerMeta):
 class UserSystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True)
+    default_term = models.IntegerField(
+        choices=((0, "Yes"), (1, "No")), default = 0
+    )
 
 class Payment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)

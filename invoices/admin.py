@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.contrib import admin
 from django.utils.html import format_html
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.conf import settings
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
@@ -32,6 +32,17 @@ class PaymentInline(admin.TabularInline):
         except:
             return '-'
         return
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        UserMode = apps.get_model('invoices', model_name='UserSystem')
+        if UserMode.objects.get(user=request.user).default_term == 1:
+            return qs
+        
+        a,b, object_id = resolve(request.path)
+        op_bal = apps.get_model('invoices', model_name='OpeningBalance')
+        op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+        return qs.filter(date__gte = op_bal_reqd.term.start_date)
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
@@ -64,6 +75,16 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
         except:
             return '-'
         return
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        UserMode = apps.get_model('invoices', model_name='UserSystem')
+        if UserMode.objects.get(user=request.user).default_term == 1:
+            return qs
+        a,b, object_id = resolve(request.path)
+        op_bal = apps.get_model('invoices', model_name='OpeningBalance')
+        op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+        return qs.filter(date__gte = op_bal_reqd.term.start_date)
 
 
     # def view(self, request, obj, parent_obj=None):
