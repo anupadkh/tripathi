@@ -167,7 +167,7 @@ class OpeningBalance(models.Model):
 
     def payments(self):
         return self.customer.payment_set.filter(
-                date__range=[self.term.start_date, self.term.end_date]
+                Q(date__range=[self.term.start_date, self.term.end_date]) | Q(term = self.term)
             )
 
 
