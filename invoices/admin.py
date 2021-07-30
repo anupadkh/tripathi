@@ -22,7 +22,7 @@ class PaymentInline(admin.TabularInline):
     show_change_link = True
     ordering = ('-date',)
     classes = ["tab-payment-inline", "collapse"]
-    fields = ['nepali_date', 'amount', 'payment_mode', 'nep_date', 'date']
+    fields = ['nepali_date', 'amount', 'payment_mode', 'nep_date', 'date', 'term']
     readonly_fields = ['nep_date',]
 
     def nep_date(self, obj):
@@ -32,13 +32,13 @@ class PaymentInline(admin.TabularInline):
         except:
             return '-'
         return
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         UserMode = apps.get_model('invoices', model_name='UserSystem')
         if UserMode.objects.get(user=request.user).default_term == 1:
             return qs
-        
+
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
         op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]

@@ -32,14 +32,14 @@ def index(request, id=None, cs_id=None):
 
     items = Items.objects.filter(invoice=invoice)
     context = {
-        "id" : id, 
+        "id" : id,
         "invoice": invoice,
         "user": user,
         "owner": owner,
         "items": items,
         "customer" : customer,
         "unsaved": True,
-        "due" : customer.remaining_pay()
+        "due" : round(customer.arthik_remaining_pay, 2)
         }
     if request.method == "POST":
         data = request.POST
@@ -78,16 +78,16 @@ def index(request, id=None, cs_id=None):
                         "errors":"Error in Item " + posted_item['description']
                     })
                 return(request, 'invoice/index.html', context)
-            
+
             saved_items_id.append(item_saved.id)
-        
+
         to_delete = list(
             set(already_saved_ids) - set(saved_items_id)
         )
         Items.objects.filter(id__in = to_delete).delete()
         items = Items.objects.filter(invoice=invoice)
         context = {
-        "id" : id, 
+        "id" : id,
         "invoice": invoice,
         "user": user,
         "owner": owner,
@@ -97,18 +97,18 @@ def index(request, id=None, cs_id=None):
         "due" : customer.remaining_pay()
         }
         return render(request, 'invoice/index.html', context)
-        
 
-            
-            
-        
+
+
+
+
 
     return render(request, 'invoice/index.html', context)
 
 def customer_details(request,id):
     openBal = OpeningBalance.objects.get(id=id)
-    
-    
+
+
     context = {
         "title": "%s-%s" %(openBal.customer.name , openBal.term.title),
         "invoices": openBal.invoices,

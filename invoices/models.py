@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from nepali_date.date import NepaliDate
+from django.db.models import Q
 # Create your models here.
 
 class ContactPerson(models.Model):
@@ -40,6 +41,20 @@ class Customer(CustomerMeta):
         except:
             return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
                 sum(self.payment_set.all().values_list('amount', flat=True))
+
+    @property
+    def arthik_remaining_pay(self):
+        try:
+            open_bal = self.openingbalance_set.all().prefetch_related('term').order_by('-term__start_date')[0]
+            return sum(self.invoice_set.filter(date__gte = open_bal.term.start_date).values_list("to_pay", flat=True)) - \
+                sum(self.payment_set.filter(date__gte = open_bal.term.start_date).filter(
+                Q(term__isnull=True) | Q(term = open_bal.term.id)
+                ).values_list('amount', flat=True)) + \
+                open_bal.amount
+        except:
+            return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
+                sum(self.payment_set.all().values_list('amount', flat=True))
+
 
 class Invoice(models.Model):
     issued_for = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
@@ -96,9 +111,10 @@ class UserSystem(models.Model):
 class Payment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     amount = models.FloatField()
-    payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport"), (6, "Bank Deposit"), (7, "Goods Returned")))
+    payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport"), (6, "Bank Deposit"), (7, "Goods Returned"), (8, "Discount")))
     date = models.DateField(null=True, blank=True)
     nepali_date = models.CharField(blank=True, max_length=20, default="")
+    term = models.ForeignKey("Term", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return "%s" % self.amount
