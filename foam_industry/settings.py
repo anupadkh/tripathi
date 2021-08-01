@@ -26,12 +26,21 @@ SECRET_KEY = 'filyggaf^!o))u-+h!xauig3lps@5+w6z8a8)8t(jkc^0==n^#'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+from .jazzmin_settings import *
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'material.admin',
+    # 'crispy_forms',
+    # 'django_select2',
+    # 'easy_thumbnails',
+    # 'image_cropping',
+    # 'django_ajax',
+    # 'cruds_adminlte',
+
+    # 'material.admin',
+    'jazzmin',
     # 'material.admin.default',
     # 'adminlte3',
     #  # Optional: Django admin theme (must be before django.contrib.admin)

@@ -34,26 +34,34 @@ class Customer(CustomerMeta):
     # @property
     def remaining_pay(self):
         try:
-            return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
+            return round(
+                sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
                 sum(self.payment_set.all().values_list('amount', flat=True)) + \
-                self.openingbalance_set.all().prefetch_related('term').order_by('term__start_date')[0].amount
+                self.openingbalance_set.all().prefetch_related('term').order_by('term__start_date')[0].amount,
+            2)
                 # sum(self.openingbalance_set.all().values_list('amount', flat=True))
         except:
-            return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
-                sum(self.payment_set.all().values_list('amount', flat=True))
+            return round(
+                sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
+                sum(self.payment_set.all().values_list('amount', flat=True)),
+            2)
 
     @property
     def arthik_remaining_pay(self):
         try:
             open_bal = self.openingbalance_set.all().prefetch_related('term').order_by('-term__start_date')[0]
-            return sum(self.invoice_set.filter(date__gte = open_bal.term.start_date).values_list("to_pay", flat=True)) - \
+            return round(
+                sum(self.invoice_set.filter(date__gte = open_bal.term.start_date).values_list("to_pay", flat=True)) - \
                 sum(self.payment_set.filter(date__gte = open_bal.term.start_date).filter(
                 Q(term__isnull=True) | Q(term = open_bal.term.id)
                 ).values_list('amount', flat=True)) + \
-                open_bal.amount
+                open_bal.amount,
+            2)
         except:
-            return sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
-                sum(self.payment_set.all().values_list('amount', flat=True))
+            return round(
+                sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
+                sum(self.payment_set.all().values_list('amount', flat=True)),
+            2)
 
 
 class Invoice(models.Model):
@@ -167,7 +175,7 @@ class OpeningBalance(models.Model):
 
     def payments(self):
         return self.customer.payment_set.filter(
-                Q(date__range=[self.term.start_date, self.term.end_date]) | Q(term = self.term)
+                (Q(date__range=[self.term.start_date, self.term.end_date]) & Q(term__isnull = True)) | Q(term = self.term)
             )
 
 
