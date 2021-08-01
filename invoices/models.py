@@ -150,12 +150,12 @@ class OpeningBalance(models.Model):
         return "%s : %s" % (self.customer.name, self.amount)
 
     def save(self, *args, **kwargs):
-        if self.amount == 0  :
-            if ('amount' in kwargs ) & kwargs['amount'] == NULL:
+        if self.id:
+            super(OpeningBalance, self).save(*args, **kwargs)
+        else:
+            if self.amount == 0:
                 self.amount = self.customer.remaining_pay()
-    
-    
-        super(OpeningBalance, self).save(*args, **kwargs)
+            super(OpeningBalance, self).save(*args, **kwargs)
 
     class Meta:
         unique_together=('customer', 'term')
