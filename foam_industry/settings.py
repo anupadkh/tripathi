@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     # 'django_ajax',
     # 'cruds_adminlte',
 
-    # 'material.admin',
-    'jazzmin',
+    'material.admin',
+    # 'jazzmin',
     # 'material.admin.default',
     # 'adminlte3',
     #  # Optional: Django admin theme (must be before django.contrib.admin)
