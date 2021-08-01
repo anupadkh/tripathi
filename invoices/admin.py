@@ -41,8 +41,11 @@ class PaymentInline(admin.TabularInline):
 
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
-        op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
-        return qs.filter(date__gte = op_bal_reqd.term.start_date)
+        try:
+            op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+            return qs.filter(date__gte = op_bal_reqd.term.start_date)
+        except:
+            return qs
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
@@ -83,8 +86,11 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
             return qs
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
-        op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
-        return qs.filter(date__gte = op_bal_reqd.term.start_date)
+        try:
+            op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+            return qs.filter(date__gte = op_bal_reqd.term.start_date)
+        except:
+            return qs
 
 
     # def view(self, request, obj, parent_obj=None):
@@ -106,8 +112,11 @@ class OpeningInline(admin.TabularInline):
             return qs
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
-        op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
-        return qs.filter(id=op_bal_reqd.id)
+        try:
+            op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+            return qs.filter(id=op_bal_reqd.id)
+        except:
+            return qs
 
 
 
