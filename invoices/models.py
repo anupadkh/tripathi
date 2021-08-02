@@ -186,7 +186,7 @@ class OpeningBalance(models.Model):
                 date__range=[self.term.start_date, self.term.end_date]
             ).values_list("to_pay", flat=True)) - \
             sum(self.customer.payment_set.filter(
-                date__range=[self.term.start_date, self.term.end_date]
+                (Q(date__range=[self.term.start_date, self.term.end_date]) & Q(term__isnull = True)) | Q(term = self.term)
             ).values_list('amount', flat=True)) + \
             self.amount
 
@@ -199,5 +199,5 @@ class OpeningBalance(models.Model):
     @property
     def total_pay(self):
         return sum(self.customer.payment_set.filter(
-            date__range=[self.term.start_date, self.term.end_date]
+            (Q(date__range=[self.term.start_date, self.term.end_date]) & Q(term__isnull = True)) | Q(term = self.term)
         ).values_list('amount', flat=True))
