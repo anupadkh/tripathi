@@ -87,6 +87,10 @@ class Invoice(models.Model):
             except:
                 return self.total
 
+    def save(self, *args, **kwargs):
+        if self.vat_bill_no != "":
+            self.is_vat = True
+        super(Invoice, self).save(*args, **kwargs)
 
 
 
