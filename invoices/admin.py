@@ -124,7 +124,7 @@ class OpeningInline(admin.TabularInline):
 class CustomerAdmin(admin.ModelAdmin):
     model = apps.get_model('invoices', model_name='Customer')
     ordering = ('name',)
-    list_display = ['name', 'contact_person', 'phone', 'pan', 'address', 'remaining_pay']
+    list_display = ['name', 'phone', 'pan', 'address', 'remaining_pay', 'arthik_pending']
     inlines = [InvoiceInline, PaymentInline, OpeningInline]
     readonly_fields = ('addInvoice', )
     search_fields = ('name','address', 'phone','pan')

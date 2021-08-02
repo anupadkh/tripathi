@@ -62,6 +62,14 @@ class Customer(CustomerMeta):
                 sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
                 sum(self.payment_set.all().values_list('amount', flat=True)),
             2)
+    
+    @property 
+    def arthik_pending(self):
+        return 'NPR {:,.2f}'.format(self.arthik_remaining_pay,)
+    
+    @property
+    def pay_due(self):
+        return 'NPR {:,.2f}'.format(self.remaining_pay(),)
 
 
 class Invoice(models.Model):
@@ -88,7 +96,7 @@ class Invoice(models.Model):
                 return self.total
 
     def save(self, *args, **kwargs):
-        if self.vat_bill_no != "":
+        if self.vat_bill_no != None:
             self.is_vat = True
         super(Invoice, self).save(*args, **kwargs)
 
