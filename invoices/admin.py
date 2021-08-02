@@ -212,7 +212,7 @@ class TermAdmin(admin.ModelAdmin):
 @admin.register(apps.get_model('invoices', model_name='OpeningBalance'))
 class OpeningAdmin(admin.ModelAdmin):
     list_display = ['customer', 'closing_due', 'term']
-    readonly_fields = [ 'closing_due', 'term_start', 'term_end', 'print_statement']
+    readonly_fields = [ 'closing_due', 'term_start', 'term_end', 'print_statement', 'term']
     list_filter = ['customer', 'term']
     search_fields = ('customer__name',)
 
