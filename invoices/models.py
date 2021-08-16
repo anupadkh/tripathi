@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from nepali_date.date import NepaliDate
-from django.db.models import Q
+from django.db.models import CheckConstraint, Q, F
 # Create your models here.
 
 class ContactPerson(models.Model):
@@ -151,6 +151,15 @@ class Term(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check = Q(end_date__gt=F('start_date')), 
+                name = 'check_start_date',
+            ),
+        ]
 
 class OpeningBalance(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -213,3 +222,13 @@ class OpeningBalance(models.Model):
         return sum(self.customer.payment_set.filter(
             (Q(date__range=[self.term.start_date, self.term.end_date]) & Q(term__isnull = True)) | Q(term = self.term)
         ).values_list('amount', flat=True))
+    
+    def payments_until(self, end_date):
+        return self.customer.payment_set.filter(
+            (Q(date__range=[self.term.start_date, end_date]) & Q(term__isnull = True)) | Q(term = self.term)
+        ).values_list('amount', flat=True)
+    
+    def sales_until(self, end_date):
+        return self.customer.invoice_set.filter(
+                date__range=[self.term.start_date, end_date]
+            ).values_list("to_pay", flat=True)
