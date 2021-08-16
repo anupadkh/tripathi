@@ -141,3 +141,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SITE_NAME = "Tripathi Foam Industry"
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 10 * 60 #
