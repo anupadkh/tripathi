@@ -197,14 +197,17 @@ class TermAdmin(admin.ModelAdmin):
         balances = OpeningBalance.objects.filter(term=obj)
         total_due_amount = 0
         for x in balances:
-            total_due_amount += x.closing_due
+            total_due_amount += x.amount
+        for y in Payment.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte=obj.end_date) & Q(Q(term=obj) | Q(term__isnull=True))):
+            total_due_amount += y.amount
+        total_due_amount = float(self.total_sales(obj).replace(',',"" ).replace('NPR','')) -  total_due_amount 
         return "NPR {:,.2f}".format(total_due_amount)
 
     def total_sales(self,obj):
-        balances = OpeningBalance.objects.filter(term=obj)
+        balances = Invoice.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date))
         total_sales_amount = 0
         for x in balances:
-            total_sales_amount += x.total_sales
+            total_sales_amount += x.total
         return "NPR {:,.2f}".format(total_sales_amount)
 
 
