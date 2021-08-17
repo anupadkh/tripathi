@@ -222,15 +222,15 @@ def term_monthly_details(request, term):
         month_days = int(year_calendar[current_month-1])
         prev_month_days = int(year_calendar[prev_month-1])
         
-        start_day = NepaliDate(prev_year, prev_month, prev_month_days).to_english_date()
+        start_day = NepaliDate(current_year, current_month, 1).to_english_date()
         end_day = NepaliDate(current_year, current_month, month_days).to_english_date()
         opening_dates.append(start_day)
         monthly_invoices = Invoice.objects.filter(
             Q(date__gte = start_day) & Q(date__lte = end_day) 
-        )
+        ).prefetch_related('issued_for')
         monthly_payments = Payment.objects.filter(
             Q(date__gte=start_day) & Q(date__lte=end_day) & Q(Q(term__isnull=True) | Q(term__id=term))
-        )
+        ).prefetch_related('customer')
         
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
         openings.append(monthly_opening)
@@ -243,7 +243,7 @@ def term_monthly_details(request, term):
     context = {
         'page_title': "Monthly Summary",
         'titles':titles, 'openings': openings, 'sales': sales, 'debits':payments, 'ids': id_tags,
-        # 'titles_ids': zip(titles, id_tags),
+        'titles_ids': zip(titles, id_tags),
         'accounts': zip(id_tags, openings, opening_dates, sales, payments, titles, cash_payments), 
     }
     return render(request, 'invoice/monthly_details_term.html', context=context)

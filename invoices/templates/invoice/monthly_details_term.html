@@ -8,6 +8,8 @@
     <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
     <style>
         @media print {
@@ -21,8 +23,13 @@
     </style>
 </head>
 <body>
+    <div>
+        <button id="download-table" onclick="downloadXlsx()"> Download Table </button>
+        </div>
     <div id="print-area">
         <h1 style="text-align: center;">{{page_title}}</h1>
+        
+        <div style='display:none' id="tableZero"></div>
         {% for  id in ids%}
         <div>
             {% comment %} <h2 style="text-align: center;">{{title}}</h2> {% endcomment %}
@@ -34,6 +41,7 @@
     <div>
         <button id="print-table">Print Table</button>
     </div>
+    
 
     {% comment %}
     <form action="{% url 'members:sendsms' %}" method=GET id="formSend">
@@ -99,9 +107,13 @@ for (let index = 0; index < all_data.length; index++) {
 opening, invoices, payments
 openings, sales, debits
 {% endcomment %}
+
+
+
+
 {% for id, opening, term_date, sales, payments, title, cash in accounts  %}
 
-var tabledata{{id}} = [
+const tabledata{{id}} = [
     {
         date_eng:"{{term_date|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{term_date|date:'Y-m-d'}}"),
@@ -138,7 +150,7 @@ var tabledata{{id}} = [
     },
 ];
 
-var table{{id}} = new Tabulator("#example-table{{id}}", {
+const table{{id}} = new Tabulator("#example-table{{id}}", {
     initialSort:[
         {column: "date_eng", dir:"asc"}
     ],
@@ -186,6 +198,21 @@ function getSelectedIds(){
     });
     return selectedIds;
 };
+
+const table0 = new Tabulator("#tableZero", {
+    layout: "fitDataFill",
+    autoColumns: true,
+  });
+
+var sheets = {
+    {% for title, id in titles_ids %} 
+    "{{title}}": "#example-table{{id}}", {% endfor %}
+    }
+
+downloadXlsx = function(){
+    table0.download("xlsx", "Data.xlsx", { sheets:sheets });
+}
+
 document.getElementById("print-table").addEventListener("click", function(){
     divContents = document.getElementById("print-area").innerHTML;
     var a = window.open();
