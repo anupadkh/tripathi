@@ -190,8 +190,8 @@ for x in apps.get_models():
 
 @admin.register(apps.get_model('invoices', model_name='Term'))
 class TermAdmin(admin.ModelAdmin):
-    list_display = ['title','start_date', 'end_date', 'total_due', 'total_sales' ]
-    readonly_fields = ('total_due', 'total_sales')
+    list_display = ['title','start_date', 'end_date', 'total_due', 'total_sales', 'see_monthly_details' ]
+    readonly_fields = ('total_due', 'total_sales', 'see_monthly_details')
 
     def total_due(self, obj):
         balances = OpeningBalance.objects.filter(term=obj)
@@ -209,6 +209,9 @@ class TermAdmin(admin.ModelAdmin):
         for x in balances:
             total_sales_amount += x.total
         return "NPR {:,.2f}".format(total_sales_amount)
+    
+    def see_monthly_details(self,obj):
+        return format_html("<a href='%s' target='_blank' class='button'>Open Monthly Statement</a>" % reverse('invoices:term_monthly_details', kwargs= {"term": obj.id}))
 
 
 

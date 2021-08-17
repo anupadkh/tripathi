@@ -26,7 +26,7 @@
         {% for  id in ids%}
         <div>
             {% comment %} <h2 style="text-align: center;">{{title}}</h2> {% endcomment %}
-            <table id="example-table{{id}}" style="width:900px">
+            <table id="example-table{{id}}" style="width:1100px">
         </div>
         {% endfor %}
     </table>
@@ -99,7 +99,7 @@ for (let index = 0; index < all_data.length; index++) {
 opening, invoices, payments
 openings, sales, debits
 {% endcomment %}
-{% for id, opening, term_date, sales, payments, title in accounts  %}
+{% for id, opening, term_date, sales, payments, title, cash in accounts  %}
 
 var tabledata{{id}} = [
     {
@@ -114,6 +114,7 @@ var tabledata{{id}} = [
         date_eng:"{{invoice.date|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{invoice.date|date:'Y-m-d'}}"),
         description:"Bill no. {{invoice.vat_no}}, Invoice no: {{invoice.id}} ",
+        customer:"{{invoice.issued_for}}",
         debit:{{invoice.to_pay | floatformat:2 | default_if_none:0 }},
         id:"inv{{invoice.id}}"
     },
@@ -123,10 +124,18 @@ var tabledata{{id}} = [
         date_eng:"{{payment.date|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{payment.date|date:'Y-m-d'}}"),
         description:"{{payment.payment_mode|payment_mode}} Payment",
+        customer:"{{payment.customer}}",
         credit:{{payment.amount | floatformat:2 | default_if_none:0}},
         id:"pay{{payment.id}}"
     },
     {% endfor %}
+    {
+        date_eng:"{{cash.date|date:'Y-m-d'}}",
+        date_nep:convertToNepaliBS("{{cash.date|date:'Y-m-d'}}"),
+        description:"Payment in Cash while Billing",
+        credit:{{cash.amount | floatformat:2 | default_if_none:0}},
+        id:"cash{{id}}"
+    },
 ];
 
 var table{{id}} = new Tabulator("#example-table{{id}}", {
@@ -150,7 +159,8 @@ var table{{id}} = new Tabulator("#example-table{{id}}", {
             }, hozAlign:"center"
             },
             { title: "(मिति)" , field:"date_nep", hozAlign:"center"},
-            { title: "Description(विवरण)", field: "description", widthGrow:2, bottomCalc:total },
+            { title: "Description(विवरण)", field: "description", widthGrow:1, bottomCalc:total },
+            { title: "Customer(ग्राहक)", field: "customer", widthGrow:2 },
             { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
             { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
             { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams, bottomCalc:final, bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
