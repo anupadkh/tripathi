@@ -116,7 +116,7 @@ def customer_details(request,id, vat=False):
     }
     if vat:
         context['payments'] = []
-        context['opening'] = OpeningBalance()
+        openBal.amount = 0
     return render (request, 'invoice/customer_details.html', context=context)
 
 
@@ -168,7 +168,7 @@ def monthly_details(request, id, term, vat=False):
         sales.append(monthly_invoices)
         if vat:
             payments.append([])
-            openings.append(OpeningBalance())
+            openings.append(0)
         else:
             payments.append(monthly_payments)
             openings.append(monthly_opening)
@@ -243,7 +243,7 @@ def term_monthly_details(request, term, vat=False):
         if vat:
             payments.append([])
             monthly_opening = 0
-            openings.append({})
+            openings.append(0)
         else:
             payments.append(monthly_payments)
             openings.append(monthly_opening)
