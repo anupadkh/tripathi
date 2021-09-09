@@ -127,7 +127,7 @@ const tabledata{{id}} = [
         date_nep:convertToNepaliBS("{{invoice.date|date:'Y-m-d'}}"),
         description:"Bill no. {{invoice.vat_no}}, Invoice no: {{invoice.id}} ",
         customer:"{{invoice.issued_for}}",
-        debit:{{invoice.to_pay | floatformat:2 | default_if_none:0 }},
+        debit:{{invoice.total | floatformat:2 | default_if_none:0 }},
         id:"inv{{invoice.id}}"
     },
     {% endfor %}

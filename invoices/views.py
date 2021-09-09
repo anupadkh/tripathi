@@ -116,6 +116,7 @@ def customer_details(request,id, vat=False):
     }
     if vat:
         context['payments'] = []
+        context['opening'] = OpeningBalance()
     return render (request, 'invoice/customer_details.html', context=context)
 
 
@@ -164,12 +165,13 @@ def monthly_details(request, id, term, vat=False):
         )
         
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
-        openings.append(monthly_opening)
         sales.append(monthly_invoices)
         if vat:
             payments.append([])
+            openings.append(OpeningBalance())
         else:
             payments.append(monthly_payments)
+            openings.append(monthly_opening)
         id_tags.append('%s%s'%(current_year, current_month))
 
     context = {
@@ -238,13 +240,16 @@ def term_monthly_details(request, term, vat=False):
         ).prefetch_related('customer')
         
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
-        openings.append(monthly_opening)
-        monthly_opening += sum(monthly_invoices.values_list('total', flat=True)) - sum(monthly_payments.values_list('amount', flat=True)) - sum(monthly_invoices.values_list('paid_amount', flat=True))
-        sales.append(monthly_invoices)
         if vat:
             payments.append([])
+            monthly_opening = 0
+            openings.append({})
         else:
             payments.append(monthly_payments)
+            openings.append(monthly_opening)
+            monthly_opening += sum(monthly_invoices.values_list('total', flat=True)) - sum(monthly_payments.values_list('amount', flat=True)) - sum(monthly_invoices.values_list('paid_amount', flat=True))
+        sales.append(monthly_invoices)
+        
         id_tags.append('%s%s'%(current_year, current_month))
         cash_payments.append({'amount':sum(monthly_invoices.values_list('paid_amount', flat=True)), 'date': end_day})
 
