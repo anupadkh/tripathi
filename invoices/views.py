@@ -55,10 +55,10 @@ def index(request, id=None, cs_id=None):
             invoice.paid_amount = invoiceDetails['paid']
             invoice.date = invoiceDetails['date']
             invoice.discount = invoiceDetails['discount']
-            invoice.to_pay = invoiceDetails['to_pay']
             invoice.notes = invoiceDetails['notes']
             invoice.is_posted = True
             invoice.vat_bill_no = invoiceDetails['vat']
+            invoice.to_pay = invoiceDetails['to_pay']
             invoice.save()
             invoice = Invoice.objects.get(id=invoice.id)
         except:

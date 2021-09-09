@@ -49,8 +49,8 @@ class PaymentInline(admin.TabularInline):
 
 class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     model = apps.get_model('invoices', model_name='Invoice')
-    fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total', 'tax', 'vat_bill_no', 'is_vat')
-    extra = 1
+    fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total',)
+    extra = 0
     show_change_link = True
     inline_actions = ['view']
     readonly_fields = ['Invoice', 'nep_date']
@@ -80,7 +80,7 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
         return
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
+        qs = super(InvoiceInline, self).get_queryset(request).filter(is_vat=False)
         UserMode = apps.get_model('invoices', model_name='UserSystem')
         if UserMode.objects.get(user=request.user).default_term == 1:
             return qs
@@ -97,6 +97,16 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     #     url = "/hello"
     #     return redirect(url)
     # view.short_description = "Generate Items"
+
+
+class VatInline(InvoiceInline):
+    verbose_name = "VAT"
+    verbose_name_plural = "VAT Invoices"
+    fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total', 'tax', 'vat_bill_no')
+
+    def get_queryset(self, request):
+        qs = super(InvoiceInline, self).get_queryset(request)
+        return qs.filter(is_vat=True)
 
 class OpeningInline(admin.TabularInline):
     model = apps.get_model('invoices', model_name='OpeningBalance')
@@ -125,7 +135,7 @@ class CustomerAdmin(admin.ModelAdmin):
     model = apps.get_model('invoices', model_name='Customer')
     ordering = ('name',)
     list_display = ['name', 'phone', 'pan', 'address', 'remaining_pay', 'arthik_pending']
-    inlines = [InvoiceInline, PaymentInline, OpeningInline]
+    inlines = [InvoiceInline, VatInline, PaymentInline, OpeningInline]
     readonly_fields = ('addInvoice', )
     search_fields = ('name','address', 'phone','pan')
     classes = ('extrapretty',)

@@ -96,8 +96,11 @@ class Invoice(models.Model):
                 return self.total
 
     def save(self, *args, **kwargs):
-        if self.vat_bill_no != None:
+        if self.vat_bill_no is not '':
             self.is_vat = True
+            self.to_pay = 0
+        else:
+            self.is_vat = False
         super(Invoice, self).save(*args, **kwargs)
 
 
