@@ -218,7 +218,13 @@ class OpeningBalance(models.Model):
     def total_sales(self):
         return sum(self.customer.invoice_set.filter(
                 date__range=[self.term.start_date, self.term.end_date]
-            ).values_list("to_pay", flat=True))
+            ).filter(is_vat=False).values_list("to_pay", flat=True))
+    
+    @property
+    def total_vat_sales(self):
+        return sum(self.customer.invoice_set.filter(
+                date__range=[self.term.start_date, self.term.end_date]
+            ).filter(is_vat=True).values_list("to_pay", flat=True))
 
     @property
     def total_pay(self):
