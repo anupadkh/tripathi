@@ -9,6 +9,10 @@ urlpatterns=[
     path("invoice/<int:id>/term", views.customer_details, name="customer_term"),
     path("invoice/customer/<int:id>/term/<int:term>", views.monthly_details, name="term_details"),
     path("invoice/term/<int:term>", views.term_monthly_details, name="term_monthly_details"),
+    path("invoice/<int:id>/term/vat/<int:vat>", views.customer_details, name="vat_customer_term"),
+    path("invoice/customer/<int:id>/term/<int:term>/vat/<int:vat>", views.monthly_details, name="vat_term_details"),
+    path("invoice/term/<int:term>/vat/<int:vat>", views.term_monthly_details, name="vat_term_monthly_details"),
+    
 ]
 
 app_name = "invoices"

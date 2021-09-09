@@ -110,10 +110,12 @@ def customer_details(request,id, vat=False):
 
     context = {
         "title": "%s-%s" %(openBal.customer.name , openBal.term.title),
-        "invoices": openBal.invoices.filter(is_vat=vat),
+        "invoices": openBal.invoices().filter(is_vat=vat),
         "payments": openBal.payments,
         "opening": openBal
     }
+    if vat:
+        context['payments'] = []
     return render (request, 'invoice/customer_details.html', context=context)
 
 
@@ -164,7 +166,10 @@ def monthly_details(request, id, term, vat=False):
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
         openings.append(monthly_opening)
         sales.append(monthly_invoices)
-        payments.append(monthly_payments)
+        if vat:
+            payments.append([])
+        else:
+            payments.append(monthly_payments)
         id_tags.append('%s%s'%(current_year, current_month))
 
     context = {
@@ -236,7 +241,10 @@ def term_monthly_details(request, term, vat=False):
         openings.append(monthly_opening)
         monthly_opening += sum(monthly_invoices.values_list('total', flat=True)) - sum(monthly_payments.values_list('amount', flat=True)) - sum(monthly_invoices.values_list('paid_amount', flat=True))
         sales.append(monthly_invoices)
-        payments.append(monthly_payments)
+        if vat:
+            payments.append([])
+        else:
+            payments.append(monthly_payments)
         id_tags.append('%s%s'%(current_year, current_month))
         cash_payments.append({'amount':sum(monthly_invoices.values_list('paid_amount', flat=True)), 'date': end_day})
 
