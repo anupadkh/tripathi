@@ -106,7 +106,18 @@ class VatInline(InvoiceInline):
 
     def get_queryset(self, request):
         qs = super(InvoiceInline, self).get_queryset(request)
-        return qs.filter(is_vat=True)
+        qs = qs.filter(is_vat=True)
+        UserMode = apps.get_model('invoices', model_name='UserSystem')
+        if UserMode.objects.get(user=request.user).default_term == 1:
+            return qs
+        a,b, object_id = resolve(request.path)
+        op_bal = apps.get_model('invoices', model_name='OpeningBalance')
+        try:
+            op_bal_reqd = op_bal.objects.filter(customer__id = object_id['object_id']).order_by('-term__start_date')[0]
+            return qs.filter(date__gte = op_bal_reqd.term.start_date)
+        except:
+            return qs
+
 
 class OpeningInline(admin.TabularInline):
     model = apps.get_model('invoices', model_name='OpeningBalance')
