@@ -225,7 +225,7 @@ class TermAdmin(admin.ModelAdmin):
         return "NPR {:,.2f}".format(total_due_amount)
 
     def total_sales(self, obj):
-        balances = Invoice.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=True))
+        balances = Invoice.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=False))
         total_sales_amount = 0
         for x in balances:
             total_sales_amount += x.total

@@ -96,7 +96,7 @@ class Invoice(models.Model):
                 return self.total
 
     def save(self, *args, **kwargs):
-        if self.vat_bill_no is not '':
+        if self.vat_bill_no != '' or self.vat_bill_no is None:
             self.is_vat = True
             self.paid_amount = self.total
             self.to_pay = 0
