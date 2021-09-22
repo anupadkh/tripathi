@@ -18,13 +18,19 @@ def index(request, id=None, cs_id=None):
     if id==0 :
         customer = Customer.objects.get(id=cs_id)
         invoice = Invoice(issued_for=customer)
+        due = round(customer.arthik_remaining_pay(end_date=invoice.date), 2)
         if request.method=="POST":
             invoice.save()
             id = invoice.id
+            
+            
     else:
         invoice = Invoice.objects.get(id=id)
+        customer = invoice.issued_for
+        due = round(customer.arthik_remaining_pay(end_date=invoice.date), 2)
     if cs_id:
         customer = Customer.objects.get(id=cs_id)
+        due = round(customer.arthik_remaining_pay(end_date=None), 2)
     else:
         customer = invoice.issued_for
     user = request.user
@@ -42,7 +48,7 @@ def index(request, id=None, cs_id=None):
         "items": items,
         "customer" : customer,
         "unsaved": True,
-        "due" : round(customer.arthik_remaining_pay, 2)
+        "due" : due
         }
     if request.method == "POST":
         data = request.POST
@@ -97,7 +103,7 @@ def index(request, id=None, cs_id=None):
         "items": items,
         "customer" : customer,
         "unsaved": False,
-        "due" : customer.remaining_pay()
+        "due" : due
         }
         return render(request, 'invoice/index.html', context)
 

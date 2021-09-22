@@ -46,26 +46,33 @@ class Customer(CustomerMeta):
                 sum(self.payment_set.all().values_list('amount', flat=True)),
             2)
 
-    @property
-    def arthik_remaining_pay(self):
+    def arthik_remaining_pay(self, end_date=None):
         try:
             open_bal = self.openingbalance_set.all().prefetch_related('term').order_by('-term__start_date')[0]
+            if end_date:
+                exp = Q(date__gte=open_bal.term.start_date) & Q(date__lte=end_date)
+            else:
+                exp = Q(date__gte=open_bal.term.start_date)
             return round(
-                sum(self.invoice_set.filter(date__gte = open_bal.term.start_date).values_list("to_pay", flat=True)) - \
-                sum(self.payment_set.filter(date__gte = open_bal.term.start_date).filter(
+                sum(self.invoice_set.filter(exp).values_list("to_pay", flat=True)) - \
+                sum(self.payment_set.filter(exp).filter(
                 Q(term__isnull=True) | Q(term = open_bal.term.id)
                 ).values_list('amount', flat=True)) + \
                 open_bal.amount,
             2)
         except:
+            if end_date:
+                exp = Q(date__lte=end_date)
+            else:
+                exp = Q()
             return round(
-                sum(self.invoice_set.all().values_list("to_pay", flat=True)) - \
-                sum(self.payment_set.all().values_list('amount', flat=True)),
+                sum(self.invoice_set.filter(exp).values_list("to_pay", flat=True)) - \
+                sum(self.payment_set.filter(exp).values_list('amount', flat=True)),
             2)
     
     @property 
     def arthik_pending(self):
-        return 'NPR {:,.2f}'.format(self.arthik_remaining_pay,)
+        return 'NPR {:,.2f}'.format(self.arthik_remaining_pay(),)
     
     @property
     def pay_due(self):
