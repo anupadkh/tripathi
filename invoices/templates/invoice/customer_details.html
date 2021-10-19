@@ -171,11 +171,13 @@ var table = new Tabulator("#example-table", {
         {% if vat %},
             { title: "Total With Tax", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
             { title: "VAT", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+            { title: "Taxable", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams, bottomCalc:final, bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
             {% else %},
             { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
             { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+            { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams, bottomCalc:final, bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
         {% endif %}
-        { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams, bottomCalc:final, bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+        
     ],
 });
 table.setData(tabledata);
