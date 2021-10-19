@@ -88,8 +88,10 @@ var tabledata = [
         date_eng:"{{invoice.date|date:'Y-m-d'}}",
         date_nep:convertToNepaliBS("{{invoice.date|date:'Y-m-d'}}"),
         description:"Bill no. {{invoice.vat_bill_no}}, Invoice no: {{invoice.id}} ",
-        debit:{{invoice.to_pay | floatformat:2 | default_if_none:0 }},
-        id:"inv{{invoice.id}}"
+        debit:{{invoice.total | floatformat:2 | default_if_none:0 }},
+        id:"inv{{invoice.id}}"{% if vat %},
+        credit: {{invoice.tax}}
+        {% endif %}
     },
     {% endfor %}
     {% for payment in payments %}
@@ -166,8 +168,13 @@ var table = new Tabulator("#example-table", {
         },
         { title: "(मिति)" , field:"date_nep", hozAlign:"center"},
         { title: "Description(विवरण)", field: "description", widthGrow:2, bottomCalc:total },
-        { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
-        { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+        {% if vat %},
+            { title: "Total With Tax", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+            { title: "VAT", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+            {% else %},
+            { title: "Debit (लिनु रकम)", field: "debit", hozAlign:"right",formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+            { title: "Credit(दिनु रकम)", field:"credit", hozAlign:"right", formatter:"money", formatterParams:currencyparams, bottomCalc:"sum", bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
+        {% endif %}
         { title: "Balance(बाँकी रकम)", field:"balance" , hozAlign:"right", widthGrow:1.2, formatter:"money", formatterParams:currencyparams, bottomCalc:final, bottomCalcFormatterParams:currencyparams, bottomCalcFormatter:"money"},
     ],
 });

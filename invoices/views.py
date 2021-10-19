@@ -118,7 +118,8 @@ def customer_details(request,id, vat=False):
         "title": "%s-%s" %(openBal.customer.name , openBal.term.title),
         "invoices": openBal.invoices().filter(is_vat=vat),
         "payments": openBal.payments,
-        "opening": openBal
+        "opening": openBal,
+        "vat": vat
     }
     if vat:
         context['payments'] = []
@@ -185,6 +186,7 @@ def monthly_details(request, id, term, vat=False):
         'titles':titles, 'openings': openings, 'sales': sales, 'debits':payments, 'ids': id_tags,
         # 'titles_ids': zip(titles, id_tags),
         'accounts': zip(id_tags, openings, opening_dates, sales, payments, titles),
+        "vat": vat
     }
     return render(request, 'invoice/monthly_details.html', context=context)
 
@@ -264,5 +266,6 @@ def term_monthly_details(request, term, vat=False):
         'titles':titles, 'openings': openings, 'sales': sales, 'debits':payments, 'ids': id_tags,
         'titles_ids': zip(titles, id_tags),
         'accounts': zip(id_tags, openings, opening_dates, sales, payments, titles, cash_payments), 
+        "vat": vat
     }
     return render(request, 'invoice/monthly_details_term.html', context=context)
