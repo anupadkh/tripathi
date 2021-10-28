@@ -84,7 +84,8 @@ def index(request, id=None, cs_id=None):
                 item_saved = item_save.save()
             else:
                 context.update({
-                        "errors":"Error in Item " + posted_item['description']
+                        "errors":"Error in Item " + posted_item['description'],
+                        "invoice": invoice,
                     })
                 return(request, 'invoice/index.html', context)
 
