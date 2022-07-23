@@ -13,7 +13,7 @@ from nepali_date.date import NepaliDate
 
 
 allowed_list = [
-    "ContactPerson", "Customer", "Owner", "InvoiceCounter"
+    "ContactPerson", "Customer", "Owner",
     ]
 
 class PaymentInline(admin.TabularInline):
