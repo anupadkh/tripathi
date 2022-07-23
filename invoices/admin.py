@@ -239,10 +239,16 @@ class TermAdmin(admin.ModelAdmin):
         return "NPR {:,.2f}".format(total_sales_amount)
 
     def see_monthly_details(self,obj):
-        return format_html("<a href='%s' target='_blank' class='button'>Open Monthly Statement</a>" % reverse('invoices:term_monthly_details', kwargs= {"term": obj.id}))
+        try:
+            return format_html("<a href='%s' target='_blank' class='button'>Open Monthly Statement</a>" % reverse('invoices:term_monthly_details', kwargs= {"term": obj.id}))
+        except:
+            return None
 
     def see_monthly_vat_details(self,obj):
-        return format_html("<a href='%s' target='_blank' class='button'>Open Monthly VAT Statement</a>" % reverse('invoices:vat_term_monthly_details', kwargs= {"term": obj.id, "vat":1}))
+        try:
+            return format_html("<a href='%s' target='_blank' class='button'>Open Monthly VAT Statement</a>" % reverse('invoices:vat_term_monthly_details', kwargs= {"term": obj.id, "vat":1}))
+        except:
+            return None
 
 
 
