@@ -6,7 +6,10 @@ import json
 from nepali_date import NepaliDate
 import pandas as pd
 
-
+"""
+inv_no = Invoice Counter
+invoice_no = Invoice Number
+"""
 def sanitize_floats(x):
     if type(x) == str:
         return float(x)
@@ -15,19 +18,35 @@ def sanitize_floats(x):
 
 
 def index(request, id=None, cs_id=None):
+    # Set the counters
+    inv_no, status = InvoiceCounter.objects.get_or_create(term=request.user.usersystem.billing_term)
+    invoice_no = InvNum()
+    invoice_no.num = inv_no.count + 1
+
     if id==0 :
         customer = Customer.objects.get(id=cs_id)
         invoice = Invoice(issued_for=customer)
         due = round(customer.arthik_remaining_pay(end_date=invoice.date), 2)
+
+
         if request.method=="POST":
             invoice.save()
             id = invoice.id
-            
-            
+            inv_no.count += 1
+            inv_no.save()
+            invoice_no, status = InvNum.objects.get_or_create(invoice=invoice)
+            invoice_no.num = inv_no.count
+            invoice_no.save()
+
+
     else:
         invoice = Invoice.objects.get(id=id)
         customer = invoice.issued_for
         due = round(customer.arthik_remaining_pay(end_date=invoice.date), 2)
+        invoice_no, status = InvNum.objects.get_or_create(invoice=invoice)
+        if status: # For Old Invoices
+            invoice_no.num = invoice.id
+            invoice_no.save()
     if cs_id:
         customer = Customer.objects.get(id=cs_id)
         due = round(customer.arthik_remaining_pay(end_date=None), 2)
@@ -41,6 +60,7 @@ def index(request, id=None, cs_id=None):
 
     items = Items.objects.filter(invoice=invoice)
     context = {
+        "inv_no": invoice_no.num ,
         "id" : id,
         "invoice": invoice,
         "user": user,
@@ -104,7 +124,8 @@ def index(request, id=None, cs_id=None):
         "items": items,
         "customer" : customer,
         "unsaved": False,
-        "due" : due
+        "due" : due,
+        "inv_no": invoice_no.num ,
         }
         return render(request, 'invoice/index.html', context)
 
@@ -128,7 +149,7 @@ def customer_details(request,id, vat=False):
     return render (request, 'invoice/customer_details.html', context=context)
 
 
-def monthly_details(request, id, term, vat=False): 
+def monthly_details(request, id, term, vat=False):
     customer = Customer.objects.get(id =id)
     opening = OpeningBalance.objects.get(term__id = term, customer = customer)
     nep_start = NepaliDate.to_nepali_date(opening.term.start_date)
@@ -136,7 +157,7 @@ def monthly_details(request, id, term, vat=False):
     if NepaliDate.today()< nep_end:
         nep_end = NepaliDate.today()
     all_calendar = pd.read_csv(nepali_datetime.calendar_file.name, index_col = 0)
-    
+
     current_year = int(nep_start.year)
     current_month = int(nep_start.month)
     i = True
@@ -155,12 +176,12 @@ def monthly_details(request, id, term, vat=False):
             prev_month = current_month - 1
             prev_year = current_year
 
-        
+
         year_calendar = all_calendar.loc[current_year]
         titles.append('%s:%s' % (current_year, year_calendar.index[current_month-1]))
         month_days = int(year_calendar[current_month-1])
         prev_month_days = int(year_calendar[prev_month-1])
-        
+
         start_day = NepaliDate(prev_year, prev_month, prev_month_days).to_english_date()
         end_day = NepaliDate(current_year, current_month, month_days).to_english_date()
         opening_dates.append(start_day)
@@ -171,7 +192,7 @@ def monthly_details(request, id, term, vat=False):
         monthly_payments = Payment.objects.filter(
             Q(date__gte=start_day) & Q(date__lte=end_day) & Q(Q(term__isnull=True) | Q(term__id=term)) & Q(customer=customer)
         )
-        
+
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
         sales.append(monthly_invoices)
         if vat:
@@ -203,7 +224,7 @@ def update_loop(i, current_month, current_year, nep_end):
     return i, current_month, current_year
 
 
-def term_monthly_details(request, term, vat=False): 
+def term_monthly_details(request, term, vat=False):
     opening_bals = OpeningBalance.objects.filter(term__id = term)
     opening_term = Term.objects.get(id=term)
     monthly_opening = sum(opening_bals.values_list('amount', flat=True))
@@ -212,7 +233,7 @@ def term_monthly_details(request, term, vat=False):
     if NepaliDate.today()< nep_end:
         nep_end = NepaliDate.today()
     all_calendar = pd.read_csv(nepali_datetime.calendar_file.name, index_col = 0)
-    
+
     current_year = int(nep_start.year)
     current_month = int(nep_start.month)
     i = True
@@ -232,22 +253,22 @@ def term_monthly_details(request, term, vat=False):
             prev_month = current_month - 1
             prev_year = current_year
 
-        
+
         year_calendar = all_calendar.loc[current_year]
         titles.append('%s:%s' % (current_year, year_calendar.index[current_month-1]))
         month_days = int(year_calendar[current_month-1])
         prev_month_days = int(year_calendar[prev_month-1])
-        
+
         start_day = NepaliDate(current_year, current_month, 1).to_english_date()
         end_day = NepaliDate(current_year, current_month, month_days).to_english_date()
         opening_dates.append(start_day)
         monthly_invoices = Invoice.objects.filter(
-            Q(date__gte = start_day) & Q(date__lte = end_day) 
+            Q(date__gte = start_day) & Q(date__lte = end_day)
         ).filter(is_vat=vat).prefetch_related('issued_for')
         monthly_payments = Payment.objects.filter(
             Q(date__gte=start_day) & Q(date__lte=end_day) & Q(Q(term__isnull=True) | Q(term__id=term))
         ).prefetch_related('customer')
-        
+
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
         if vat:
             payments.append([])
@@ -258,7 +279,7 @@ def term_monthly_details(request, term, vat=False):
             openings.append(monthly_opening)
             monthly_opening += sum(monthly_invoices.values_list('total', flat=True)) - sum(monthly_payments.values_list('amount', flat=True)) - sum(monthly_invoices.values_list('paid_amount', flat=True))
         sales.append(monthly_invoices)
-        
+
         id_tags.append('%s%s'%(current_year, current_month))
         cash_payments.append({'amount':sum(monthly_invoices.values_list('paid_amount', flat=True)), 'date': end_day})
 
@@ -266,7 +287,7 @@ def term_monthly_details(request, term, vat=False):
         'page_title': "Monthly Summary",
         'titles':titles, 'openings': openings, 'sales': sales, 'debits':payments, 'ids': id_tags,
         'titles_ids': zip(titles, id_tags),
-        'accounts': zip(id_tags, openings, opening_dates, sales, payments, titles, cash_payments), 
+        'accounts': zip(id_tags, openings, opening_dates, sales, payments, titles, cash_payments),
         "vat": vat
     }
     return render(request, 'invoice/monthly_details_term.html', context=context)

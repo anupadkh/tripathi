@@ -13,7 +13,7 @@ from nepali_date.date import NepaliDate
 
 
 allowed_list = [
-    "ContactPerson", "Customer", "Owner"
+    "ContactPerson", "Customer", "Owner", "InvNum", "InvoiceCounter"
     ]
 
 class PaymentInline(admin.TabularInline):
@@ -221,7 +221,7 @@ class TermAdmin(admin.ModelAdmin):
             total_due_amount += x.amount
         for y in Payment.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte=obj.end_date) & Q(Q(term=obj) | Q(term__isnull=True))):
             total_due_amount += y.amount
-        total_due_amount = float(self.total_sales(obj).replace(',',"" ).replace('NPR','')) -  total_due_amount 
+        total_due_amount = float(self.total_sales(obj).replace(',',"" ).replace('NPR','')) -  total_due_amount
         return "NPR {:,.2f}".format(total_due_amount)
 
     def total_sales(self, obj):
@@ -230,17 +230,17 @@ class TermAdmin(admin.ModelAdmin):
         for x in balances:
             total_sales_amount += x.total
         return "NPR {:,.2f}".format(total_sales_amount)
-    
+
     def total_vat_sales(self, obj):
         balances = Invoice.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=True))
         total_sales_amount = 0
         for x in balances:
             total_sales_amount += x.total
         return "NPR {:,.2f}".format(total_sales_amount)
-    
+
     def see_monthly_details(self,obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Monthly Statement</a>" % reverse('invoices:term_monthly_details', kwargs= {"term": obj.id}))
-    
+
     def see_monthly_vat_details(self,obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Monthly VAT Statement</a>" % reverse('invoices:vat_term_monthly_details', kwargs= {"term": obj.id, "vat":1}))
 
@@ -256,12 +256,12 @@ class OpeningAdmin(admin.ModelAdmin):
 
     def print_statement(self,obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Statement</a>" % reverse('invoices:customer_term', kwargs= {"id":obj.id}))
-    
+
     def print_vat_statement(self,obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Statement</a>" % reverse('invoices:vat_customer_term', kwargs= {"id":obj.id, "vat":1}))
-    
+
     def print_monthly_statement(self, obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Monthly Statement</a>" % reverse('invoices:term_details', kwargs= {"id":obj.customer.id, "term": obj.term.id}))
-    
+
     def print_monthly_vat_statement(self, obj):
         return format_html("<a href='%s' target='_blank' class='button'>Open Monthly Statement</a>" % reverse('invoices:vat_term_details', kwargs= {"id":obj.customer.id, "term": obj.term.id, "vat":1}))

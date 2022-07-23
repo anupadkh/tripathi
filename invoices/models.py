@@ -46,6 +46,13 @@ class Customer(CustomerMeta):
                 sum(self.payment_set.all().values_list('amount', flat=True)),
             2)
 
+    @property
+    def arthik_barsa(self):
+        try:
+            return self.openingbalance_set.all().prefetch_related('term').order_by('-term__start_date')[0].term
+        except:
+            return None
+
     def arthik_remaining_pay(self, end_date=None):
         try:
             open_bal = self.openingbalance_set.all().prefetch_related('term').order_by('-term__start_date')[0]
@@ -69,11 +76,11 @@ class Customer(CustomerMeta):
                 sum(self.invoice_set.filter(exp).values_list("to_pay", flat=True)) - \
                 sum(self.payment_set.filter(exp).values_list('amount', flat=True)),
             2)
-    
-    @property 
+
+    @property
     def arthik_pending(self):
         return 'NPR {:,.2f}'.format(self.arthik_remaining_pay(),)
-    
+
     @property
     def pay_due(self):
         return 'NPR {:,.2f}'.format(self.remaining_pay(),)
@@ -138,6 +145,7 @@ class UserSystem(models.Model):
     default_term = models.IntegerField(
         choices=((0, "Yes"), (1, "No")), default = 0
     )
+    billing_term = models.ForeignKey('invoices.Term', on_delete=models.SET_NULL, null=True, blank=True)
 
 class Payment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -162,12 +170,12 @@ class Term(models.Model):
 
     def __str__(self):
         return self.title
-    
+
 
     class Meta:
         constraints = [
             CheckConstraint(
-                check = Q(end_date__gt=F('start_date')), 
+                check = Q(end_date__gt=F('start_date')),
                 name = 'check_start_date',
             ),
         ]
@@ -227,7 +235,7 @@ class OpeningBalance(models.Model):
         return sum(self.customer.invoice_set.filter(
                 date__range=[self.term.start_date, self.term.end_date]
             ).filter(is_vat=False).values_list("to_pay", flat=True))
-    
+
     @property
     def total_vat_sales(self):
         return sum(self.customer.invoice_set.filter(
@@ -239,13 +247,21 @@ class OpeningBalance(models.Model):
         return sum(self.customer.payment_set.filter(
             (Q(date__range=[self.term.start_date, self.term.end_date]) & Q(term__isnull = True)) | Q(term = self.term)
         ).values_list('amount', flat=True))
-    
+
     def payments_until(self, end_date):
         return self.customer.payment_set.filter(
             (Q(date__range=[self.term.start_date, end_date]) & Q(term__isnull = True)) | Q(term = self.term)
         ).values_list('amount', flat=True)
-    
+
     def sales_until(self, end_date):
         return self.customer.invoice_set.filter(
                 date__range=[self.term.start_date, end_date]
             ).values_list("to_pay", flat=True)
+
+class InvoiceCounter(models.Model):
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
+    count = models.IntegerField(default=0)
+
+class InvNum(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete = models.CASCADE)
+    num = models.IntegerField(default=0)
