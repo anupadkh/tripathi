@@ -13,7 +13,7 @@ from nepali_date.date import NepaliDate
 
 
 allowed_list = [
-    "ContactPerson", "Customer", "Owner",
+    "ContactPerson", "Customer", "Owner", "InvoiceCounter"
     ]
 
 class PaymentInline(admin.TabularInline):
@@ -139,7 +139,35 @@ class OpeningInline(admin.TabularInline):
         except:
             return qs
 
+class InvoiceNumInline(admin.TabularInline):
+    model = apps.get_model('invoices', model_name='InvNum')
+    extra = 0
+    show_change_link = False
 
+@admin.register(apps.get_model('invoices', model_name='Invoice'))
+class MyInvoiceAdmin(admin.ModelAdmin):
+    model = apps.get_model('invoices', model_name='Invoice')
+    inline_actions = ['view']
+    list_display = ('date','issued_for','is_posted', 'to_pay', 'total',)
+    readonly_fields = ( 'Bill',)
+    inlines=[InvoiceNumInline,]
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+    
+    def Bill(self, obj):
+        return mark_safe("<a href=\"%s\"> View </a>" % self.url(obj) )
+    
+    def url(self,obj):
+        if obj.id:
+            return reverse('invoices:index_id', kwargs={"id": obj.id})
+        else:
+            return reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":obj.issued_for.id})
+    
+    # def get_queryset(self, request):
+    #     qs = super().get_queryset(request).order_by('-date')
+    #     return qs[:100]
+    
 
 @admin.register(apps.get_model('invoices', model_name='Customer'))
 class CustomerAdmin(admin.ModelAdmin):

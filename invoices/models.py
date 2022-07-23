@@ -263,5 +263,9 @@ class InvoiceCounter(models.Model):
     count = models.IntegerField(default=0)
 
 class InvNum(models.Model):
-    invoice = models.ForeignKey(Invoice, on_delete = models.CASCADE)
+    invoice = models.OneToOneField(Invoice, on_delete = models.CASCADE)
     num = models.IntegerField(default=0)
+    
+    
+    class Meta:
+        verbose_name = "Invoice Number"

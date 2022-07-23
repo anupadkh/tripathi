@@ -47,6 +47,8 @@ def index(request, id=None, cs_id=None):
         if status: # For Old Invoices
             invoice_no.num = invoice.id
             invoice_no.save()
+            inv_no.count += 1
+            inv_no.save()
     if cs_id:
         customer = Customer.objects.get(id=cs_id)
         due = round(customer.arthik_remaining_pay(end_date=None), 2)
