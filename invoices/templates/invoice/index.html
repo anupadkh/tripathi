@@ -73,7 +73,7 @@
 			}
 		</script>
 		<header>
-			<h1><a href="{% url 'admin:invoices_customer_change' object_id=customer.id %}">{% if invoice.vat_bill_no %}VAT Invoice {% else %} Copy Bill {% endif %}</a></h1>
+			<h1><a href="{% url 'admin:invoices_customer_change' object_id=customer.id %}">{% if invoice.vat_bill_no %}VAT Invoice COPY {% else %} Copy Bill {% endif %}</a></h1>
 			<address contenteditable>
 				<p>{{owner.name | default_if_none:''}}</p>
 				<p>{{owner.address | default_if_none:''}}, Contact No.:{{owner.phone | default_if_none:''}}, Email: {{owner.email | default_if_none:''}}</p>

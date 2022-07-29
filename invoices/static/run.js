@@ -147,24 +147,24 @@ function updateInvoice() {
 		parseFloatHTML(cells[2])
      * parseFloatHTML(cells[3])
      * parseFloatHTML(cells[4])/2592
-	
+
 	if (mm === 0){
 		if (parseFloatHTML(cells[5]) != 0){
 			mm = parseFloatHTML(cells[5]);
 		}
 	}
-	
+
 	j=1;
 
 	if (mm !== 0 ){
 		if (mm !== parseFloatHTML(cells[5])){ // To handle manual insertion in MM
-			cells[5].innerText = mm.toFixed(0);
+			cells[5].innerText = mm.toFixed(2);
 		}
-		
-		
-		cells[6 + j].innerText = mm.toFixed(2) + ' mm';
+
+
+		cells[6 + j].innerText = (mm.toFixed(2) * parseFloatHTML(cells[5 + j])) + ' mm';
 	}
-	
+
 
 	price_sub = mm * parseFloatHTML(cells[5 + j])
 
@@ -222,7 +222,7 @@ function updateInvoice() {
 	// set balance and meta balance
 	cells[3].innerText = parsePrice(total + taxable);
 	cells[5].innerText = parseFloatHTML(cells[3]) - parseFloatHTML(cells[4]) - parseFloatHTML(cells[1]);
-	
+
 	// update objects
 	invoice['total'] = parseFloatHTML(cells[3])
 	invoice['paid'] = parseFloatHTML(cells[1])
@@ -232,7 +232,7 @@ function updateInvoice() {
 	console.log(items_obj, invoice)
 	document.getElementById('invoice').value = JSON.stringify(invoice);
 	document.getElementById('items').value = JSON.stringify(items_obj);
-	
+
 	// update prefix formatting
 	// ========================
 
