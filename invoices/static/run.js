@@ -161,8 +161,8 @@ function updateInvoice() {
 			cells[5].innerText = mm.toFixed(2);
 		}
 
-
-		cells[6 + j].innerText = (mm.toFixed(2) * parseFloatHTML(cells[8 + j])) + ' mm';
+		mm_new = (mm * parseFloatHTML(cells[8 + j]));
+		cells[6 + j].innerText =  mm_new.toFixed(2) + ' mm';
 	}
 
 
