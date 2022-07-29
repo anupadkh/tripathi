@@ -162,7 +162,7 @@ function updateInvoice() {
 		}
 
 
-		cells[6 + j].innerText = (mm.toFixed(2) * parseFloatHTML(cells[5 + j])) + ' mm';
+		cells[6 + j].innerText = (mm.toFixed(2) * parseFloatHTML(cells[8 + j])) + ' mm';
 	}
 
 
