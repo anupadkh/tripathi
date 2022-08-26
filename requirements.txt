@@ -3,7 +3,7 @@ django-admin-row-actions
 django-inline-actions
 django-admin-tools
 django-material-admin
-nepali_date
+# nepali_date
 django-jazzmin
 nepali-datetime
 pandas

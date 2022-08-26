@@ -3,7 +3,8 @@ import nepali_datetime
 from .models import *
 from .serializer import *
 import json
-from nepali_date import NepaliDate
+# from nepali_date import NepaliDate
+import nepali_datetime as NepDate
 import pandas as pd
 
 """
@@ -154,10 +155,10 @@ def customer_details(request,id, vat=False):
 def monthly_details(request, id, term, vat=False):
     customer = Customer.objects.get(id =id)
     opening = OpeningBalance.objects.get(term__id = term, customer = customer)
-    nep_start = NepaliDate.to_nepali_date(opening.term.start_date)
-    nep_end = NepaliDate.to_nepali_date(opening.term.end_date)
-    if NepaliDate.today()< nep_end:
-        nep_end = NepaliDate.today()
+    nep_start = NepDate.date.from_datetime_date(opening.term.start_date)
+    nep_end = NepDate.date.from_datetime_date(opening.term.end_date)
+    if NepDate.date.today()< nep_end:
+        nep_end = NepDate.date.today()
     all_calendar = pd.read_csv(nepali_datetime.calendar_file.name, index_col = 0)
 
     current_year = int(nep_start.year)
@@ -184,8 +185,8 @@ def monthly_details(request, id, term, vat=False):
         month_days = int(year_calendar[current_month-1])
         prev_month_days = int(year_calendar[prev_month-1])
 
-        start_day = NepaliDate(prev_year, prev_month, prev_month_days).to_english_date()
-        end_day = NepaliDate(current_year, current_month, month_days).to_english_date()
+        start_day = NepDate.date(prev_year, prev_month, prev_month_days).to_datetime_date()
+        end_day = NepDate.date(current_year, current_month, month_days).to_datetime_date()
         opening_dates.append(start_day)
         monthly_opening = opening.amount + sum(opening.sales_until(start_day)) - sum(opening.payments_until(start_day))
         monthly_invoices = Invoice.objects.filter(
@@ -230,10 +231,10 @@ def term_monthly_details(request, term, vat=False):
     opening_bals = OpeningBalance.objects.filter(term__id = term)
     opening_term = Term.objects.get(id=term)
     monthly_opening = sum(opening_bals.values_list('amount', flat=True))
-    nep_start = NepaliDate.to_nepali_date(opening_term.start_date)
-    nep_end = NepaliDate.to_nepali_date(opening_term.end_date)
-    if NepaliDate.today()< nep_end:
-        nep_end = NepaliDate.today()
+    nep_start = NepDate.date.from_datetime_date(opening_term.start_date)
+    nep_end = NepDate.date.from_datetime_date(opening_term.end_date)
+    if NepDate.date.today()< nep_end:
+        nep_end = NepDate.date.today()
     all_calendar = pd.read_csv(nepali_datetime.calendar_file.name, index_col = 0)
 
     current_year = int(nep_start.year)
@@ -261,8 +262,8 @@ def term_monthly_details(request, term, vat=False):
         month_days = int(year_calendar[current_month-1])
         prev_month_days = int(year_calendar[prev_month-1])
 
-        start_day = NepaliDate(current_year, current_month, 1).to_english_date()
-        end_day = NepaliDate(current_year, current_month, month_days).to_english_date()
+        start_day = NepDate.date(current_year, current_month, 1).to_datetime_date()
+        end_day = NepDate.date(current_year, current_month, month_days).to_datetime_date()
         opening_dates.append(start_day)
         monthly_invoices = Invoice.objects.filter(
             Q(date__gte = start_day) & Q(date__lte = end_day)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from nepali_date.date import NepaliDate
+# from nepali_date.date import NepaliDate
+import nepali_datetime as NepDate
 from django.db.models import CheckConstraint, Q, F
 # Create your models here.
 
@@ -112,8 +113,8 @@ class Invoice(models.Model):
     def save(self, *args, **kwargs):
         if self.vat_bill_no != '' or self.vat_bill_no is None:
             self.is_vat = True
-            self.paid_amount = self.total
-            self.to_pay = 0
+            # self.paid_amount = self.total
+            # self.to_pay = 0
         else:
             self.is_vat = False
         super(Invoice, self).save(*args, **kwargs)
@@ -160,7 +161,8 @@ class Payment(models.Model):
 
     def save(self, *args, **kwargs):
         if self.nepali_date != "":
-            self.date = NepaliDate.to_english_date(NepaliDate(*self.nepali_date.split('-')))
+            # self.date = NepaliDate.to_english_date(NepaliDate(*self.nepali_date.split('-')))
+            self.date = NepDate.date.to_datetime_date(NepDate.date(*self.nepali_date.split('-')))
         super(Payment, self).save(*args, **kwargs)
 
 class Term(models.Model):
@@ -265,7 +267,7 @@ class InvoiceCounter(models.Model):
 class InvNum(models.Model):
     invoice = models.OneToOneField(Invoice, on_delete = models.CASCADE)
     num = models.IntegerField(default=0)
-    
-    
+
+
     class Meta:
         verbose_name = "Invoice Number"

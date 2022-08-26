@@ -9,7 +9,8 @@ from inline_actions.admin import InlineActionsMixin
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
-from nepali_date.date import NepaliDate
+# from nepali_date.date import NepaliDate
+import nepali_datetime as NepDate
 
 
 allowed_list = [
@@ -28,7 +29,8 @@ class PaymentInline(admin.TabularInline):
     def nep_date(self, obj):
         try:
             # valid_dob = (self.date.split('-'))
-            return NepaliDate.to_nepali_date(obj.date)
+            # return NepaliDate.to_nepali_date(obj.date)
+            return NepDate.date.from_datetime_date(obj.date)
         except:
             return '-'
         return
@@ -74,7 +76,8 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     def nep_date(self, obj):
         try:
             # valid_dob = (self.date.split('-'))
-            return NepaliDate.to_nepali_date(obj.date)
+            # return NepaliDate.to_nepali_date(obj.date)
+            return NepDate.date.from_datetime_date(obj.date)
         except:
             return '-'
         return
