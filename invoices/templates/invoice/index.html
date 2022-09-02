@@ -163,12 +163,16 @@
 			<a class="add">+</a>
 			<table class="balance">
 				<tr>
-					<th><span contenteditable>Total</span></th>
+					<th><span contenteditable>Sub-Total</span></th>
 					<td><span data-prefix>रु</span><span>600.00</span></td>
 				</tr>
 				<tr>
-					<th><span contenteditable>Amount Paid</span></th>
-					<td><span data-prefix>रु</span><span contenteditable>{{invoice.paid_amount}}</span></td>
+					<th><span contenteditable>Discount</span></th>
+					<td><span data-prefix>रु</span><span contenteditable>0</span></td>
+				</tr>
+				<tr>
+					<th><span contenteditable>Taxable Amount</span></th>
+					<td><span data-prefix>रु</span><span contenteditable></span></td>
 				</tr>
 				<tr>
 					<th><span contenteditable>TAX 13%</span></th>
@@ -179,8 +183,8 @@
 					<td><span data-prefix>रु</span><span>600.00</span></td>
 				</tr>
 				<tr>
-					<th><span contenteditable>Discount</span></th>
-					<td><span data-prefix>रु</span><span contenteditable>0.00</span></td>
+					<th><span contenteditable>Paid in Cash</span></th>
+					<td><span data-prefix>रु</span><span contenteditable>{{invoice.paid_amount}}</span></td>
 				</tr>
 				<tr>
 					<th><span contenteditable>Balance Due</span></th>

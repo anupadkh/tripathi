@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     # 'django_ajax',
     # 'cruds_adminlte',
 
-    # 'material.admin',
+    'material.admin',
     # 'jazzmin',
     'material',
     'material.admin.default',

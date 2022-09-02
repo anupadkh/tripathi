@@ -215,20 +215,25 @@ function updateInvoice() {
 
 	// get balance cells
 	cells = document.querySelectorAll('table.balance td:last-child span:last-child');
-
+	// taxable has 13% tax information
 	// set total
-	cells[0].innerText = total;
-	cells[2].innerText = taxable;
+	cells[0].innerText = total; //subtotal
+	// discount
+	non_taxable = total - taxable/.13; // discard this row (index)
+	cells[2].innerText = parsePrice(taxable/.13 - parseFloatHTML(cells[1])); // taxable amount
 	// set balance and meta balance
-	cells[3].innerText = parsePrice(total + taxable);
-	cells[5].innerText = parseFloatHTML(cells[3]) - parseFloatHTML(cells[4]) - parseFloatHTML(cells[1]);
+	cells[3].innerText = parsePrice(taxable - parseFloatHTML(cells[1]) * .13); // 13% tax
+	cells[4].innerText = parsePrice(parseFloatHTML(cells[2]) * 1.13 + non_taxable); // Amount with tax
+	// paid_in_cash
+	cells[6].innerText = parseFloatHTML(cells[4]) - parseFloatHTML(cells[5]); // Balance Due in Bill
+	
 
 	// update objects
-	invoice['total'] = parseFloatHTML(cells[3])
-	invoice['paid'] = parseFloatHTML(cells[1])
-	invoice['tax'] = taxable
-	invoice['discount'] = parseFloatHTML(cells[4])
-	invoice['to_pay'] = invoice['total'] - invoice['paid'] - invoice['discount']
+	invoice['total'] = parseFloatHTML(cells[4]);
+	invoice['paid'] = parseFloatHTML(cells[5]);
+	invoice['tax'] = parseFloatHTML(cells[2]) * 0.13;
+	invoice['discount'] = parseFloatHTML(cells[1]);
+	invoice['to_pay'] = invoice['total'] - invoice['paid'];
 	console.log(items_obj, invoice)
 	document.getElementById('invoice').value = JSON.stringify(invoice);
 	document.getElementById('items').value = JSON.stringify(items_obj);
