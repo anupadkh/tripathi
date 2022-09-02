@@ -105,7 +105,7 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
 class VatInline(InvoiceInline):
     verbose_name = "VAT"
     verbose_name_plural = "VAT Invoices"
-    fields = ('Invoice','nep_date','is_posted', 'total', 'tax', 'vat_bill_no')
+    fields = ('Invoice','nep_date','is_posted', 'total','to_pay', 'tax', 'vat_bill_no')
 
     def get_queryset(self, request):
         qs = super(InvoiceInline, self).get_queryset(request)

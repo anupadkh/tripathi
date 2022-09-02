@@ -9,5 +9,5 @@
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
     "python.linting.pylamaEnabled": true,
-    "python.defaultInterpreterPath": "/anup_files/FILES/programs/tripthi/venv_tripath/bin/python3"
+    "python.defaultInterpreterPath": "/anup_files/FILES/programs/tripthi/venv_tripath/bin/python"
 }
