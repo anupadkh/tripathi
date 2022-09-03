@@ -162,7 +162,7 @@ class Payment(models.Model):
     def save(self, *args, **kwargs):
         if self.nepali_date != "":
             # self.date = NepaliDate.to_english_date(NepaliDate(*self.nepali_date.split('-')))
-            self.date = NepDate.date.to_datetime_date(NepDate.date(*self.nepali_date.split('-')))
+            self.date = NepDate.date.to_datetime_date(NepDate.date(*tuple([int(x) for x in self.nepali_date.split('-')])))
         super(Payment, self).save(*args, **kwargs)
 
 class Term(models.Model):
