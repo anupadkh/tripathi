@@ -146,9 +146,9 @@ def customer_details(request,id, vat=False):
         "opening": openBal,
         "vat": vat
     }
-    if vat:
-        context['payments'] = []
-        openBal.amount = 0
+    # if vat:
+    #     context['payments'] = []
+    #     openBal.amount = 0
     return render (request, 'invoice/customer_details.html', context=context)
 
 
@@ -198,12 +198,12 @@ def monthly_details(request, id, term, vat=False):
 
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
         sales.append(monthly_invoices)
-        if vat:
-            payments.append([])
-            openings.append(0)
-        else:
-            payments.append(monthly_payments)
-            openings.append(monthly_opening)
+        # if vat:
+        #     payments.append([])
+        #     openings.append(0)
+        # else:
+        payments.append(monthly_payments)
+        openings.append(monthly_opening)
         id_tags.append('%s%s'%(current_year, current_month))
 
     context = {
@@ -273,14 +273,14 @@ def term_monthly_details(request, term, vat=False):
         ).prefetch_related('customer')
 
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
-        if vat:
-            payments.append([])
-            monthly_opening = 0
-            openings.append(0)
-        else:
-            payments.append(monthly_payments)
-            openings.append(monthly_opening)
-            monthly_opening += sum(monthly_invoices.values_list('total', flat=True)) - sum(monthly_payments.values_list('amount', flat=True)) - sum(monthly_invoices.values_list('paid_amount', flat=True))
+        # if vat:
+        #     payments.append([])
+        #     monthly_opening = 0
+        #     openings.append(0)
+        # else:
+        payments.append(monthly_payments)
+        openings.append(monthly_opening)
+        monthly_opening += sum(monthly_invoices.values_list('total', flat=True)) - sum(monthly_payments.values_list('amount', flat=True)) - sum(monthly_invoices.values_list('paid_amount', flat=True))
         sales.append(monthly_invoices)
 
         id_tags.append('%s%s'%(current_year, current_month))
