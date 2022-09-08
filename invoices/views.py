@@ -149,6 +149,8 @@ def customer_details(request,id, vat=False):
     if vat:
         context['payments'] = []
         openBal.amount = 0
+    else:
+        context['invoices'] = openBal.invoices()
     return render (request, 'invoice/customer_details.html', context=context)
 
 
@@ -191,7 +193,9 @@ def monthly_details(request, id, term, vat=False):
         monthly_opening = opening.amount + sum(opening.sales_until(start_day)) - sum(opening.payments_until(start_day))
         monthly_invoices = Invoice.objects.filter(
             Q(date__gte = start_day) & Q(date__lte = end_day) & Q(issued_for=customer)
-        ).filter(is_vat=vat)
+        )
+        if vat:
+            monthly_invoices = monthly_invoices.filter(is_vat=vat)
         monthly_payments = Payment.objects.filter(
             Q(date__gte=start_day) & Q(date__lte=end_day) & Q(Q(term__isnull=True) | Q(term__id=term)) & Q(customer=customer)
         )
@@ -267,13 +271,14 @@ def term_monthly_details(request, term, vat=False):
         opening_dates.append(start_day)
         monthly_invoices = Invoice.objects.filter(
             Q(date__gte = start_day) & Q(date__lte = end_day)
-        ).filter(is_vat=vat).prefetch_related('issued_for')
+        ).prefetch_related('issued_for')
         monthly_payments = Payment.objects.filter(
             Q(date__gte=start_day) & Q(date__lte=end_day) & Q(Q(term__isnull=True) | Q(term__id=term))
         ).prefetch_related('customer')
 
         i, current_month, current_year = update_loop(i, current_month, current_year, nep_end)
         if vat:
+            monthly_invoices = monthly_invoices.filter(is_vat=vat)
             payments.append([])
             monthly_opening = 0
             openings.append(0)
