@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'material.admin',
     # 'jazzmin',
     'material',
-    'material.admin.default',
+    # 'material.admin.default',
     # 'adminlte3',
     #  # Optional: Django admin theme (must be before django.contrib.admin)
     # 'adminlte3_theme',
