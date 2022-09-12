@@ -128,7 +128,9 @@ const tabledata{{id}} = [
         description:"Bill no. {{invoice.vat_bill_no}}, Invoice no: {{invoice.id}} ",
         customer:"{{invoice.issued_for}}",
         debit:{{invoice.total | floatformat:2 | default_if_none:0 }},
-        id:"inv{{invoice.id}}"
+        id:"inv{{invoice.id}}",
+        credit: {{invoice.paid_amount}},
+   
     },
     {% endfor %}
     {% for payment in payments %}
