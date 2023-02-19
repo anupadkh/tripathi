@@ -1,7 +1,353 @@
+/*******************************
+         Site Settings
+*******************************/
+
+/*-------------------
+       Fonts
+--------------------*/
+
+/*-------------------
+      Base Sizes
+--------------------*/
+
+/* This is the single variable that controls them all */
+
+/* The size of page text  */
+
+/*-------------------
+  Exact Pixel Values
+--------------------*/
+
+/*
+  These are used to specify exact pixel values in em
+  for things like borders that remain constantly
+  sized as emSize adjusts
+
+  Since there are many more sizes than names for sizes,
+  these are named by their original pixel values.
+
+*/
+
+/*-------------------
+    Border Radius
+--------------------*/
+
+/* See Power-user section below
+   for explanation of $px variables
+*/
+
+/*-------------------
+      Site Colors
+--------------------*/
+
+/*---  Colors  ---*/
+
+/*---  Light Colors  ---*/
+
+/*---   Neutrals  ---*/
+
+/*--- Colored Backgrounds ---*/
+
+/*--- Colored Text ---*/
+
+/*--- Colored Headers ---*/
+
+/*--- Colored Border ---*/
+
+/*-------------------
+     Alpha Colors
+--------------------*/
+
+/*-------------------
+    Brand Colors
+--------------------*/
+
+/*--------------
+  Page Heading
+---------------*/
+
+/*-------------------
+        Page
+--------------------*/
+
+/*--------------
+   Form Input
+---------------*/
+
+/* This adjusts the default form input across all elements */
+
+/* Input Text Color */
+
+/* Line Height Default For Inputs in Browser (Descendors are 17px at 14px base em) */
+
+/*-------------------
+    Focused Input
+--------------------*/
+
+/* Used on inputs, textarea etc */
+
+/* Used on dropdowns, other larger blocks */
+
+/*-------------------
+        Sizes
+--------------------*/
+
+/*
+  Sizes are all expressed in terms of 14px/em (default em)
+  This ensures these "ratios" remain constant despite changes in EM
+*/
+
+/*-------------------
+      Paragraph
+--------------------*/
+
+/*-------------------
+       Links
+--------------------*/
+
+/*-------------------
+  Highlighted Text
+--------------------*/
+
+/*-------------------
+       Em Sizes
+--------------------*/
+
+/*
+  This rounds $size values to the closest pixel then expresses that value in (r)em.
+  This ensures all size values round to exact pixels
+*/
+
+/* em */
+
+/* rem */
+
+/*-------------------
+       Loader
+--------------------*/
+
+/*-------------------
+        Grid
+--------------------*/
+
+/*-------------------
+     Transitions
+--------------------*/
+
+/*-------------------
+     Breakpoints
+--------------------*/
+
+/* Columns */
+
+/*******************************
+           Power-User
+*******************************/
+
+/*-------------------
+    Emotive Colors
+--------------------*/
+
+/* Positive */
+
+/* Negative */
+
+/* Info */
+
+/* Warning */
+
+/*-------------------
+        Paths
+--------------------*/
+
+/* For source only. Modified in gulp for dist */
+
+/*-------------------
+       Icons
+--------------------*/
+
+/* Maximum Glyph Width of Icon */
+
+/*-------------------
+     Neutral Text
+--------------------*/
+
+/*-------------------
+     Brand Colors
+--------------------*/
+
+/*-------------------
+      Borders
+--------------------*/
+
+/*-------------------
+       Accents
+--------------------*/
+
+/* Differentiating Neutrals */
+
+/* Differentiating Layers */
+
+/*-------------------
+    Derived Values
+--------------------*/
+
+/* Loaders Position Offset */
+
+/* Rendered Scrollbar Width */
+
+/* Maximum Single Character Glyph Width, aka Capital "W" */
+
+/* Used to match floats with text */
+
+/* Header Spacing */
+
+/* Minimum Mobile Width */
+
+/* Positive / Negative Dupes */
+
+/* Responsive */
+
+/*******************************
+             States
+*******************************/
+
+/*-------------------
+      Disabled
+--------------------*/
+
+/*-------------------
+        Hover
+--------------------*/
+
+/*---  Shadows  ---*/
+
+/*---  Colors  ---*/
+
+/*---  Emotive  ---*/
+
+/*---  Brand   ---*/
+
+/*---  Dark Tones  ---*/
+
+/*---  Light Tones  ---*/
+
+/*-------------------
+        Focus
+--------------------*/
+
+/*---  Colors  ---*/
+
+/*---  Emotive  ---*/
+
+/*---  Brand   ---*/
+
+/*---  Dark Tones  ---*/
+
+/*---  Light Tones  ---*/
+
+/*-------------------
+    Down (:active)
+--------------------*/
+
+/*---  Colors  ---*/
+
+/*---  Emotive  ---*/
+
+/*---  Brand   ---*/
+
+/*---  Dark Tones  ---*/
+
+/*---  Light Tones  ---*/
+
+/*-------------------
+        Active
+--------------------*/
+
+/*---  Colors  ---*/
+
+/*---  Emotive  ---*/
+
+/*---  Brand   ---*/
+
+/*---  Dark Tones  ---*/
+
+/*---  Light Tones  ---*/
+
+/*******************************
+             Table
+*******************************/
+
+/*-------------------
+       Element
+--------------------*/
+
+/*--------------
+     Parts
+---------------*/
+
+/* Table Row */
+
+/* Table Cell */
+
+/* Table Header */
+
+/* Table Footer */
+
+/* Responsive Size */
+
+/*-------------------
+       Types
+--------------------*/
+
+/* Definition */
+
+/*--------------
+    Couplings
+---------------*/
+
+/*--------------
+     States
+---------------*/
+
+/* Positive */
+
+/* Negative */
+
+/* Error */
+
+/* Warning */
+
+/* Active */
+
+/*--------------
+     Types
+---------------*/
+
+/* Attached */
+
+/* Striped */
+
+/* Selectable */
+
+/* Sortable */
+
+/* Colors */
+
+/* Inverted */
+
+/* Basic */
+
+/* Padded */
+
+/* Compact */
+
+/* Sizes */
+
 .tabulator {
   position: relative;
-  border: 1px solid #333;
-  background-color: #222;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  background-color: #FFFFFF;
   font-size: 14px;
   text-align: left;
   overflow: hidden;
@@ -29,8 +375,8 @@
   box-sizing: border-box;
   width: 100%;
   border-bottom: 1px solid #999;
-  background-color: #333;
-  color: #fff;
+  background-color: #F9FAFB;
+  color: rgba(0, 0, 0, 0.87);
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
@@ -59,8 +405,8 @@
   box-sizing: border-box;
   flex-direction: column;
   justify-content: flex-start;
-  border-right: 1px solid #aaa;
-  background: #333;
+  border-right: 1px solid #ddd;
+  background: #F9FAFB;
   text-align: left;
   vertical-align: bottom;
   overflow: hidden;
@@ -69,7 +415,7 @@
 .tabulator .tabulator-header .tabulator-col.tabulator-moving {
   position: absolute;
   border: 1px solid #999;
-  background: #1a1a1a;
+  background: #dae1e7;
   pointer-events: none;
 }
 
@@ -138,7 +484,7 @@
 .tabulator .tabulator-header .tabulator-col.tabulator-col-group .tabulator-col-group-cols {
   position: relative;
   display: flex;
-  border-top: 1px solid #aaa;
+  border-top: 1px solid #ddd;
   overflow: hidden;
   margin-right: -1px;
 }
@@ -170,7 +516,7 @@
 
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
   cursor: pointer;
-  background-color: #1a1a1a;
+  background-color: #dae1e7;
 }
 
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-col-sorter {
@@ -253,23 +599,23 @@
 }
 
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
-  border-right: 2px solid #888;
+  border-right: 2px solid #ddd;
 }
 
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-right {
-  border-left: 2px solid #888;
+  border-left: 2px solid #ddd;
 }
 
 .tabulator .tabulator-header .tabulator-calcs-holder {
   box-sizing: border-box;
   min-width: 600%;
-  background: #404040 !important;
-  border-top: 1px solid #888;
-  border-bottom: 1px solid #aaa;
+  background: white !important;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 
 .tabulator .tabulator-header .tabulator-calcs-holder .tabulator-row {
-  background: #404040 !important;
+  background: white !important;
 }
 
 .tabulator .tabulator-header .tabulator-calcs-holder .tabulator-row .tabulator-col-resize-handle {
@@ -322,29 +668,29 @@
 .tabulator .tabulator-tableholder .tabulator-table {
   position: relative;
   display: inline-block;
-  background-color: #666;
+  background-color: #fff;
   white-space: nowrap;
   overflow: visible;
-  color: #fff;
+  color: #333;
 }
 
 .tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs {
   font-weight: bold;
-  background: #373737 !important;
+  background: #e2e2e2 !important;
 }
 
 .tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs.tabulator-calcs-top {
-  border-bottom: 2px solid #888;
+  border-bottom: 2px solid #ddd;
 }
 
 .tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs.tabulator-calcs-bottom {
-  border-top: 2px solid #888;
+  border-top: 2px solid #ddd;
 }
 
 .tabulator .tabulator-footer {
   border-top: 1px solid #999;
-  background-color: #333;
-  color: #333;
+  background-color: #fff;
+  color: #555;
   font-weight: bold;
   white-space: nowrap;
   user-select: none;
@@ -370,15 +716,15 @@
   box-sizing: border-box;
   width: 100%;
   text-align: left;
-  background: #404040 !important;
-  border-bottom: 1px solid #888;
-  border-top: 1px solid #888;
+  background: white !important;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
   overflow: hidden;
 }
 
 .tabulator .tabulator-footer .tabulator-calcs-holder .tabulator-row {
   display: inline-block;
-  background: #404040 !important;
+  background: white !important;
 }
 
 .tabulator .tabulator-footer .tabulator-calcs-holder .tabulator-row .tabulator-col-resize-handle {
@@ -401,7 +747,7 @@
 .tabulator .tabulator-footer .tabulator-paginator {
   flex: 1;
   text-align: right;
-  color: #333;
+  color: #555;
   font-family: inherit;
   font-weight: inherit;
   font-size: inherit;
@@ -429,7 +775,7 @@
 }
 
 .tabulator .tabulator-footer .tabulator-page.active {
-  color: #fff;
+  color: #d00;
 }
 
 .tabulator .tabulator-footer .tabulator-page:disabled {
@@ -498,24 +844,24 @@
   position: relative;
   box-sizing: border-box;
   min-height: 22px;
-  background-color: #666;
+  background-color: #fff;
 }
 
 .tabulator-row.tabulator-row-even {
-  background-color: #444;
+  background-color: #EFEFEF;
 }
 
 .tabulator-row.tabulator-selectable:hover {
-  background-color: #999;
+  background-color: #bbb;
   cursor: pointer;
 }
 
 .tabulator-row.tabulator-selected {
-  background-color: #000;
+  background-color: #9ABCEA;
 }
 
 .tabulator-row.tabulator-selected:hover {
-  background-color: #888;
+  background-color: #769BCC;
   cursor: pointer;
 }
 
@@ -526,8 +872,8 @@
 
 .tabulator-row.tabulator-moving {
   position: absolute;
-  border-top: 1px solid #888;
-  border-bottom: 1px solid #888;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   pointer-events: none;
   z-index: 15;
 }
@@ -552,8 +898,8 @@
 .tabulator-row .tabulator-responsive-collapse {
   box-sizing: border-box;
   padding: 5px;
-  border-top: 1px solid #888;
-  border-bottom: 1px solid #888;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 
 .tabulator-row .tabulator-responsive-collapse:empty {
@@ -577,7 +923,7 @@
   position: relative;
   box-sizing: border-box;
   padding: 4px;
-  border-right: 1px solid #888;
+  border-right: 1px solid #ddd;
   vertical-align: middle;
   white-space: nowrap;
   overflow: hidden;
@@ -593,15 +939,15 @@
 }
 
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
-  border-right: 2px solid #888;
+  border-right: 2px solid #ddd;
 }
 
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
-  border-left: 2px solid #888;
+  border-left: 2px solid #ddd;
 }
 
 .tabulator-row .tabulator-cell.tabulator-editing {
-  border: 1px solid #999;
+  border: 1px solid #1D68CD;
   outline: none;
   padding: 0;
 }
@@ -614,14 +960,14 @@
 }
 
 .tabulator-row .tabulator-cell.tabulator-validation-fail {
-  border: 1px solid #dd0000;
+  border: 1px solid #DB2828;
 }
 
 .tabulator-row .tabulator-cell.tabulator-validation-fail input,
 .tabulator-row .tabulator-cell.tabulator-validation-fail select {
   border: 1px;
   background: transparent;
-  color: #dd0000;
+  color: #DB2828;
 }
 
 .tabulator-row .tabulator-cell.tabulator-row-handle {
@@ -653,8 +999,8 @@
   margin-top: -9px;
   margin-right: 5px;
   border-bottom-left-radius: 1px;
-  border-left: 2px solid #888;
-  border-bottom: 2px solid #888;
+  border-left: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
 }
 
 .tabulator-row .tabulator-cell .tabulator-data-tree-control {
@@ -665,7 +1011,7 @@
   height: 11px;
   width: 11px;
   margin-right: 5px;
-  border: 1px solid #fff;
+  border: 1px solid #333;
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -691,7 +1037,7 @@
   top: 3px;
   height: 1px;
   width: 7px;
-  background: #fff;
+  background: #333;
 }
 
 .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand {
@@ -699,7 +1045,7 @@
   position: relative;
   height: 7px;
   width: 1px;
-  background: #fff;
+  background: #333;
 }
 
 .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand:after {
@@ -709,7 +1055,7 @@
   top: 3px;
   height: 1px;
   width: 7px;
-  background: #fff;
+  background: #333;
 }
 
 .tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle {
@@ -724,7 +1070,7 @@
   width: 15px;
   border-radius: 20px;
   background: #666;
-  color: #666;
+  color: #fff;
   font-weight: bold;
   font-size: 1.1em;
 }
@@ -743,7 +1089,7 @@
 }
 
 .tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle svg {
-  stroke: #666;
+  stroke: #fff;
 }
 
 .tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle .tabulator-responsive-collapse-toggle-close {
@@ -760,7 +1106,7 @@
 .tabulator-row.tabulator-group {
   box-sizing: border-box;
   border-bottom: 1px solid #999;
-  border-right: 1px solid #888;
+  border-right: 1px solid #ddd;
   border-top: 1px solid #999;
   padding: 5px;
   padding-left: 10px;
@@ -827,8 +1173,8 @@
   position: absolute;
   display: inline-block;
   box-sizing: border-box;
-  background: #666;
-  border: 1px solid #888;
+  background: #fff;
+  border: 1px solid #ddd;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
   font-size: 14px;
   overflow-y: auto;
@@ -863,7 +1209,7 @@
 
 .tabulator-menu .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover {
   cursor: pointer;
-  background: #444;
+  background: #EFEFEF;
 }
 
 .tabulator-menu .tabulator-menu-item.tabulator-menu-item-submenu {
@@ -880,13 +1226,13 @@
   content: '';
   border-width: 1px 1px 0 0;
   border-style: solid;
-  border-color: #888;
+  border-color: #ddd;
   vertical-align: top;
   transform: rotate(45deg);
 }
 
 .tabulator-menu .tabulator-menu-separator {
-  border-top: 1px solid #888;
+  border-top: 1px solid #ddd;
 }
 
 .tabulator-edit-list {
@@ -898,40 +1244,40 @@
 
 .tabulator-edit-list .tabulator-edit-list-item {
   padding: 4px;
-  color: #fff;
+  color: #333;
   outline: none;
 }
 
 .tabulator-edit-list .tabulator-edit-list-item.active {
-  color: #666;
-  background: #999;
+  color: #fff;
+  background: #1D68CD;
 }
 
 .tabulator-edit-list .tabulator-edit-list-item.active.focused {
-  outline: 1px solid rgba(102, 102, 102, 0.5);
+  outline: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .tabulator-edit-list .tabulator-edit-list-item.focused {
-  outline: 1px solid #999;
+  outline: 1px solid #1D68CD;
 }
 
 .tabulator-edit-list .tabulator-edit-list-item:hover {
   cursor: pointer;
-  color: #666;
-  background: #999;
+  color: #fff;
+  background: #1D68CD;
 }
 
 .tabulator-edit-list .tabulator-edit-list-placeholder {
   padding: 4px;
-  color: #fff;
+  color: #333;
   text-align: center;
 }
 
 .tabulator-edit-list .tabulator-edit-list-group {
-  border-bottom: 1px solid #888;
+  border-bottom: 1px solid #ddd;
   padding: 4px;
   padding-top: 6px;
-  color: #fff;
+  color: #333;
   font-weight: bold;
 }
 
@@ -966,7 +1312,7 @@
 
 .tabulator.tabulator-rtl .tabulator-header .tabulator-col {
   text-align: initial;
-  border-left: 1px solid #aaa;
+  border-left: 1px solid #ddd;
   border-right: initial;
 }
 
@@ -987,7 +1333,7 @@
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell {
   border-right: initial;
-  border-left: 1px solid #888;
+  border-left: 1px solid #ddd;
 }
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell .tabulator-data-tree-branch {
@@ -996,7 +1342,7 @@
   border-bottom-left-radius: initial;
   border-bottom-right-radius: 1px;
   border-left: initial;
-  border-right: 2px solid #888;
+  border-right: 2px solid #ddd;
 }
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell .tabulator-data-tree-control {
@@ -1005,11 +1351,11 @@
 }
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
-  border-left: 2px solid #888;
+  border-left: 2px solid #ddd;
 }
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
-  border-right: 2px solid #888;
+  border-right: 2px solid #ddd;
 }
 
 .tabulator.tabulator-rtl .tabulator-row .tabulator-col-resize-handle:last-of-type {
@@ -1047,14 +1393,14 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
   margin-top: -9px;
   margin-right: 5px;
   border-bottom-left-radius: 1px;
-  border-left: 2px solid #888;
-  border-bottom: 2px solid #888;
+  border-left: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
 }
 
 .tabulator-print-table .tabulator-print-table-group {
   box-sizing: border-box;
   border-bottom: 1px solid #999;
-  border-right: 1px solid #888;
+  border-right: 1px solid #ddd;
   border-top: 1px solid #999;
   padding: 5px;
   padding-left: 10px;
@@ -1125,7 +1471,7 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
   height: 11px;
   width: 11px;
   margin-right: 5px;
-  border: 1px solid #fff;
+  border: 1px solid #333;
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -1151,7 +1497,7 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
   top: 3px;
   height: 1px;
   width: 7px;
-  background: #fff;
+  background: #333;
 }
 
 .tabulator-print-table .tabulator-data-tree-control .tabulator-data-tree-control-expand {
@@ -1159,7 +1505,7 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
   position: relative;
   height: 7px;
   width: 1px;
-  background: #fff;
+  background: #333;
 }
 
 .tabulator-print-table .tabulator-data-tree-control .tabulator-data-tree-control-expand:after {
@@ -1169,101 +1515,462 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
   top: 3px;
   height: 1px;
   width: 7px;
-  background: #fff;
+  background: #333;
 }
 
 .tabulator {
-  background-color: #222;
+  width: 100%;
+  margin: 1em 0em;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  box-shadow: none;
+  border-radius: 0.28571rem;
+  color: rgba(0, 0, 0, 0.87);
+  /* Red */
+  /* Orange */
+  /* Yellow */
+  /* Olive */
+  /* Green */
+  /* Teal */
+  /* Blue */
+  /* Violet */
+  /* Purple */
+  /* Pink */
+  /* Brown */
+  /* Grey */
+  /* Black */
+}
+
+.tabulator .tabulator-header {
+  border-right: none;
+  border-bottom: 1px solid rgba(34, 36, 38, 0.1);
+  background-color: #F9FAFB;
+  box-shadow: none;
+  color: rgba(0, 0, 0, 0.87);
+  font-style: none;
+  font-weight: bold;
+  text-transform: none;
 }
 
 .tabulator .tabulator-header .tabulator-col {
-  background-color: #333;
+  border-right: none;
+  background-color: #F9FAFB;
 }
 
-.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title .tabulator-title-editor {
-  color: #fff;
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 0.92857em 0.78571em;
 }
 
-.tabulator .tabulator-header .tabulator-col .tabulator-header-filter input,
-.tabulator .tabulator-header .tabulator-col .tabulator-header-filter select {
-  border: 1px solid #999;
-  background: #444;
-  color: #fff;
+.tabulator .tabulator-tableholder .tabulator-table {
+  background-color: transparent;
 }
 
-.tabulator .tabulator-header .tabulator-calcs-holder {
-  background: #1a1a1a !important;
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs {
+  background: #f2f2f2 !important;
 }
 
-.tabulator .tabulator-header .tabulator-calcs-holder .tabulator-row {
-  background: #1a1a1a !important;
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs.tabulator-calcs-top {
+  border-bottom: 2px solid #ddd;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs.tabulator-calcs-bottom {
+  border-top: 2px solid #ddd;
+}
+
+.tabulator .tabulator-footer {
+  padding: 0.78571em 0.78571em;
+  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  box-shadow: none;
+  background: #F9FAFB;
+  text-align: right;
+  color: rgba(0, 0, 0, 0.87);
+  font-style: normal;
+  font-weight: normal;
+  text-transform: none;
 }
 
 .tabulator .tabulator-footer .tabulator-calcs-holder {
-  background: #262626 !important;
+  margin: -0.78571em -0.78571em 0.78571em -0.78571em;
+  background: white !important;
 }
 
 .tabulator .tabulator-footer .tabulator-calcs-holder .tabulator-row {
-  background: #262626 !important;
+  background: white !important;
 }
 
-.tabulator .tabulator-footer .tabulator-paginator label {
+.tabulator .tabulator-footer .tabulator-calcs-holder:only-child {
+  margin-bottom: -0.78571em;
+  border-bottom: none;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.positive,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.positive {
+  box-shadow: 0px 0px 0px #A3C293 inset;
+  background: #FCFFF5 !important;
+  color: #21BA45 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.positive:hover,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.positive:hover {
+  background: #f7ffe6 !important;
+  color: #13ae38 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.negative,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.negative {
+  box-shadow: 0px 0px 0px #E0B4B4 inset;
+  background: #FFF6F6 !important;
+  color: #DB2828 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.negative:hover,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.negative:hover {
+  background: #ffe7e7 !important;
+  color: #d41616 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.error,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.error {
+  box-shadow: 0px 0px 0px #E0B4B4 inset;
+  background: #FFF6F6 !important;
+  color: #DB2828 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.error:hover,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.error:hover {
+  background: #ffe7e7 !important;
+  color: #d12323 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.warning,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.warning {
+  box-shadow: 0px 0px 0px #C9BA9B inset;
+  background: #FFFAF3 !important;
+  color: #F2C037 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.warning:hover,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.warning:hover {
+  background: #fff4e4 !important;
+  color: #f1bb29 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.active,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.active {
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.87) inset;
+  background: #E0E0E0 !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.active:hover,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.active:hover {
+  background: #f7ffe6 !important;
+  color: #13ae38 !important;
+}
+
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.active,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row.disabled:hover,
+.tabulator .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell.active {
+  pointer-events: none;
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.tabulator.inverted {
+  background: #333333;
+  color: rgba(255, 255, 255, 0.9);
+  border: none;
+}
+
+.tabulator.inverted .tabulator-header {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tabulator.inverted .tabulator-header .tabulator-col {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.tabulator.inverted .tabulator-tableholder .tabulator-table .tabulator-row {
+  color: rgba(255, 255, 255, 0.9);
+  border: none;
+}
+
+.tabulator.inverted .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.tabulator.inverted .tabulator-footer {
+  background: #FFFFFF;
+}
+
+.tabulator.striped .tabulator-row:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tabulator.celled {
+  border: 1px solid rgba(34, 36, 38, 0.15);
+}
+
+.tabulator.celled .tabulator-header .tabulator-col {
+  border-right: 1px solid rgba(34, 36, 38, 0.1);
+}
+
+.tabulator.celled .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  border-right: 1px solid rgba(34, 36, 38, 0.1);
+}
+
+.tabulator[class*="single line"] .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  border-right: none;
+}
+
+.tabulator.red {
+  border-top: 0.2em solid #DB2828;
+}
+
+.tabulator.inverted.red {
+  background-color: #DB2828 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.orange {
+  border-top: 0.2em solid #F2711C;
+}
+
+.tabulator.inverted.orange {
+  background-color: #F2711C !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.yellow {
+  border-top: 0.2em solid #FBBD08;
+}
+
+.tabulator.inverted.yellow {
+  background-color: #FBBD08 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.olive {
+  border-top: 0.2em solid #B5CC18;
+}
+
+.tabulator.inverted.olive {
+  background-color: #B5CC18 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.green {
+  border-top: 0.2em solid #21BA45;
+}
+
+.tabulator.inverted.green {
+  background-color: #21BA45 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.teal {
+  border-top: 0.2em solid #00B5AD;
+}
+
+.tabulator.inverted.teal {
+  background-color: #00B5AD !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.blue {
+  border-top: 0.2em solid #2185D0;
+}
+
+.tabulator.inverted.blue {
+  background-color: #2185D0 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.violet {
+  border-top: 0.2em solid #6435C9;
+}
+
+.tabulator.inverted.violet {
+  background-color: #6435C9 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.purple {
+  border-top: 0.2em solid #A333C8;
+}
+
+.tabulator.inverted.purple {
+  background-color: #A333C8 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.pink {
+  border-top: 0.2em solid #E03997;
+}
+
+.tabulator.inverted.pink {
+  background-color: #E03997 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.brown {
+  border-top: 0.2em solid #A5673F;
+}
+
+.tabulator.inverted.brown {
+  background-color: #A5673F !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.grey {
+  border-top: 0.2em solid #767676;
+}
+
+.tabulator.inverted.grey {
+  background-color: #767676 !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.black {
+  border-top: 0.2em solid #1B1C1D;
+}
+
+.tabulator.inverted.black {
+  background-color: #1B1C1D !important;
+  color: #FFFFFF !important;
+}
+
+.tabulator.padded .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 1em 1em;
+}
+
+.tabulator.padded .tabulator-header .tabulator-col .tabulator-col-content .tabulator-arrow {
+  top: 20px;
+}
+
+.tabulator.padded .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  padding: 1em 1em;
+}
+
+.tabulator.padded.very .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 1.5em 1.5em;
+}
+
+.tabulator.padded.very .tabulator-header .tabulator-col .tabulator-col-content .tabulator-arrow {
+  top: 26px;
+}
+
+.tabulator.padded.very .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  padding: 1.5em 1.5em;
+}
+
+.tabulator.compact .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 0.5em 0.7em;
+}
+
+.tabulator.compact .tabulator-header .tabulator-col .tabulator-col-content .tabulator-arrow {
+  top: 12px;
+}
+
+.tabulator.compact .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  padding: 0.5em 0.7em;
+}
+
+.tabulator.compact.very .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 0.4em 0.6em;
+}
+
+.tabulator.compact.very .tabulator-header .tabulator-col .tabulator-col-content .tabulator-arrow {
+  top: 10px;
+}
+
+.tabulator.compact.very .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  padding: 0.4em 0.6em;
+}
+
+.tabulator-row {
+  border-bottom: 1px solid rgba(34, 36, 38, 0.1);
+}
+
+.tabulator-row.tabulator-row-even {
+  background-color: transparent;
+}
+
+.tabulator-row.tabulator-selectable:hover {
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.87) inset;
+  background: #E0E0E0 !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.tabulator-row.tabulator-selected {
+  background-color: #9ABCEA !important;
+}
+
+.tabulator-row.tabulator-selected:hover {
+  background-color: #769BCC !important;
+  cursor: pointer;
+}
+
+.tabulator-row.tabulator-moving {
+  pointer-events: none !important;
+}
+
+.tabulator-row .tabulator-cell {
+  padding: 0.78571em 0.78571em;
+  border-right: none;
+  vertical-align: middle;
+}
+
+.tabulator-row .tabulator-cell:last-of-type {
+  border-right: none;
+}
+
+.tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle {
   color: #fff;
-}
-
-.tabulator .tabulator-footer .tabulator-page-counter {
-  color: #fff;
-}
-
-.tabulator .tabulator-footer .tabulator-page {
-  color: #333;
-  font-family: inherit;
-  font-weight: inherit;
-  font-size: inherit;
 }
 
 .tabulator-row.tabulator-group {
-  min-width: 100%;
-  color: #333;
-}
-
-.tabulator-row.tabulator-group:hover {
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.1);
+  background: #fafafa;
 }
 
 .tabulator-row.tabulator-group span {
   color: #666;
 }
 
-.tabulator-edit-select-list {
-  background: #fff;
+.tabulator-menu {
+  background: #FFFFFF;
 }
 
-.tabulator-edit-select-list .tabulator-edit-select-list-item {
-  color: #666;
+.tabulator-menu .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover {
+  background: #F9FAFB;
+}
+
+.tabulator-edit-select-list {
+  background: #FFFFFF;
 }
 
 .tabulator-edit-select-list .tabulator-edit-select-list-item.active {
-  color: #999;
-  background: #444;
+  color: #FFFFFF;
 }
 
 .tabulator-edit-select-list .tabulator-edit-select-list-item.active.focused {
-  outline: 1px solid rgba(153, 153, 153, 0.5);
-}
-
-.tabulator-edit-select-list .tabulator-edit-select-list-item.focused {
-  outline: 1px solid #444;
+  outline: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .tabulator-edit-select-list .tabulator-edit-select-list-item:hover {
-  color: #999;
-  background: #666;
+  color: #FFFFFF;
+}
+
+.tabulator-edit-select-list .tabulator-edit-select-list-notice {
+  color: inherit;
 }
 
 .tabulator-print-table .tabulator-print-table-group {
-  color: #333;
+  background: #fafafa;
 }
 
-/*# sourceMappingURL=tabulator_midnight.css.map */
+.tabulator-print-table .tabulator-print-table-group span {
+  color: #666;
+}
+
+/*# sourceMappingURL=tabulator_semanticui.css.map */
