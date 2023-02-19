@@ -11,12 +11,12 @@
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
     <style>
         @media print {
-    body{
+    {% comment %} body{
         width: 21cm;
         height: 29.7cm;
         margin: 10mm 10mm 10mm 10mm;
         /* change the margins as you want them to be. */
-   }
+   } {% endcomment %}
    #print-table{
     display:none;
    }
