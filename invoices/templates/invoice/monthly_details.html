@@ -17,6 +17,9 @@
         margin: 10mm 10mm 10mm 10mm;
         /* change the margins as you want them to be. */
    }
+   #print-table{
+    display:none;
+   }
 }
     </style>
 </head>
@@ -189,16 +192,19 @@ function getSelectedIds(){
     return selectedIds;
 };
 document.getElementById("print-table").addEventListener("click", function(){
-    divContents = document.getElementById("print-area").innerHTML;
+    window.print();
+    {% comment %} divContents = document.getElementById("print-area").innerHTML;
     var a = window.open();
             a.document.write('<html>');
             a.document.write(document.getElementsByTagName("head")[0].outerHTML);
             a.document.write('<body >');
             a.document.write(divContents);
-            a.document.write('</body></html>');
-            a.document.close();
+            a.document.write("<\/body><\/html>");
+            if (a.print()){
+                a.close();
+            }; {% endcomment %}
             // console.log(a)
-            a.print();
+            {% comment %} a.print(); {% endcomment %}
 });
 {% comment %}
 var fieldEl = document.getElementById("filter-field");

@@ -10,6 +10,10 @@
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
     <style>
+    #printWindowScript {
+            display: none;
+        }
+        
         @media print {
     body{
         width: 21cm;
@@ -17,6 +21,13 @@
         margin: 10mm 10mm 10mm 10mm;
         /* change the margins as you want them to be. */
    }
+   #printWindowScript {
+        display: none;
+    }
+    #print-table{
+        display:none;
+       }
+
 }
     </style>
 </head>
@@ -217,16 +228,28 @@ function getSelectedIds(){
     return selectedIds;
 };
 document.getElementById("print-table").addEventListener("click", function(){
-    divContents = document.getElementById("print-area").innerHTML;
+    window.print();
+    {% comment %} divContents = document.getElementById("print-area").innerHTML;
+    printWindowScript = document.getElementById("printWindowScript").innerHTML;
     var a = window.open();
-            a.document.write('<html>');
-            a.document.write(document.getElementsByTagName("head")[0].outerHTML);
-            a.document.write('<body >');
-            a.document.write(divContents);
-            a.document.write('</body></html>');
-            a.document.close();
+    a.document.write('<html>');
+    a.document.write(document.getElementsByTagName("head")[0].outerHTML);
+    a.document.write('<body >');
+    a.document.write(divContents);
+    a.document.write('<script>');
+    a.document.write(printWindowScript);
+    a.document.write("<\/script>");
+    a.document.write("<\/body><\/html>");
+    if (a.print()){
+        a.close();
+    }; {% endcomment %}
+    
+            {% comment %} a.document.body.addEventListener("DOMContentLoaded",((event)=>{
+                this.this.print();
+                this.this.close();
+            }))
+             {% endcomment %}
             // console.log(a)
-            a.print();
 });
 {% comment %}
 var fieldEl = document.getElementById("filter-field");
@@ -273,5 +296,12 @@ document.getElementById("filter-clear").addEventListener("click", function(){
 });
 {% endcomment %}
 </script>
+<div id="printWindowScript">
+    function myprint(){
+        window.print();
+        window.close();
+    }
+setTimeOut(myprint, 500);
+</div>
 </body>
 </html>
