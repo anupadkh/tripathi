@@ -9,6 +9,8 @@
     <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+    <script src="{% static '/jspdf.plugin.autotable.min.js' %}"></script>
+    <script src="{% static '/jspdf.umd.min.js' %}"></script>
     <style>
         @media print {
     body{
@@ -17,7 +19,7 @@
         margin: 10mm 10mm 10mm 10mm;
         /* change the margins as you want them to be. */
    }
-   #print-table{
+   .buttons{
     display:none;
    }
 }
@@ -34,8 +36,9 @@
         {% endfor %}
     </table>
     </div>
-    <div>
+    <div class="buttons">
         <button id="print-table">Print Table</button>
+        <button id="save-table" onclick="save_as_pdf();">Save Table </button>
     </div>
 
     {% comment %}
