@@ -1,0 +1,21 @@
+<html prefix="mo: http://purl.org/ontology/mo/
+              dc: http://purl.org/dc/elements/1.1/
+              xsd: http://www.w3.org/2001/XMLSchema#
+              tl: http://purl.org/NET/c4dm/timeline.owl#
+              event: http://purl.org/NET/c4dm/event.owl#
+              foaf: http://xmlns.com/foaf/0.1/
+              rdfs: http://www.w3.org/2000/01/rdf-schema#">
+              <head>
+                <title>Home</title>
+              </head>
+              <body>
+                <span typeof="mo:Track" about="#track-1">
+  <span property="dc:title">Turnover</span>
+  is a track by 
+  <a rel="foaf:maker" typeof="mo:MusicGroup"
+     href="http://musicbrainz.org/artist/233fc3f3-6de2-465c-985e-e721dbabbace#_">
+    <span property="foaf:name">Fugazi</span>
+  </a>
+</span>
+              </body>
+</html>
