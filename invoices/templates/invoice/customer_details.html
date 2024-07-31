@@ -9,6 +9,7 @@
     <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+    <script src="{% static '/js/xlsx.full.min.js' %}"></script>
     <style>
     #printWindowScript {
             display: none;
@@ -65,6 +66,7 @@
     <div>
         <button id="print-table">Print Table</button>
     </div>
+    <button id="download-xlsx">Download Excel</button>
 
     {% comment %}
     <form action="{% url 'members:sendsms' %}" method=GET id="formSend">
@@ -195,6 +197,7 @@ var table = new Tabulator("#example-table", {
 });
 table.setData(tabledata);
 
+
 function update_balance(table_obj){
     all_data = table_obj.getData();
     // console.log(all_data);
@@ -250,6 +253,9 @@ document.getElementById("print-table").addEventListener("click", function(){
             }))
              {% endcomment %}
             // console.log(a)
+});
+document.getElementById("download-xlsx").addEventListener("click", function(){
+    table.download("xlsx", "data.xlsx", {sheetName:"My Data"});
 });
 {% comment %}
 var fieldEl = document.getElementById("filter-field");
