@@ -1,4 +1,4 @@
-c:
+cd c:\
 cd software
 cd tripathi
 git pull
