@@ -7,7 +7,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as 
 from django.contrib.auth.models import User, Group
 from inline_actions.admin import InlineActionsMixin
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
 # from nepali_date.date import NepaliDate
 import nepali_datetime as NepDate
