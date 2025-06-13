@@ -1,4 +1,5 @@
-d:
+c:
+cd software
 cd tripathi
 git pull
 copy /b/v/y backup.sqlite3 db.sqlite3
