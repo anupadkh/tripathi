@@ -1,3 +1,4 @@
+django<4.2
 django_rest_framework
 django-admin-row-actions
 django-inline-actions
