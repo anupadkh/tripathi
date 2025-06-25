@@ -7,6 +7,4 @@ django-material-admin
 django-jazzmin
 nepali-datetime
 pandas
-# Reversing Admin URLS
-# https://docs.djangoproject.com/en/3.1/ref/contrib/admin/#reversing-admin-urls
-django<4.2
+
