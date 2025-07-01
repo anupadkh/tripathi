@@ -1,5 +1,9 @@
-d:
+cd c:\
+cd software
 cd tripathi
 git pull
-copy /b/v/y backup.sqlite3 db.sqlite3
+copy /b/v/y db.sqlite3 backup.sqlite3
+git add *
+git commit -m 'db file'
+git push
 python manage.py runserver

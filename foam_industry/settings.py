@@ -25,7 +25,7 @@ SECRET_KEY = 'filyggaf^!o))u-+h!xauig3lps@5+w6z8a8)8t(jkc^0==n^#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.240', 'localhost']
+ALLOWED_HOSTS = ['192.168.18.224', 'localhost', '127.0.0.1']
 from .jazzmin_settings import *
 
 
