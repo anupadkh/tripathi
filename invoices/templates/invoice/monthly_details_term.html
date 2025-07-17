@@ -6,11 +6,19 @@
     <title>{{title}}</title>
     <link href="{% static 'dist/css/tabulator.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
+    {% comment %} <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
+    <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+     {% endcomment %}
+    <!-- Tabulator Semantic UI theme -->
+<link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator_semantic-ui.min.css" rel="stylesheet">
+
+<!-- Moment.js with locales -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
+
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 
-    <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+    
     <style>
         @media print {
     {% comment %} body{
