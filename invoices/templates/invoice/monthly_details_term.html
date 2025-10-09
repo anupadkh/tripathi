@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
     <link href="{% static 'dist/css/tabulator.min.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+
     <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
     {% comment %} <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
      {% endcomment %}
     <!-- Tabulator Semantic UI theme -->
-<link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator_semantic-ui.min.css" rel="stylesheet">
+<link href="{% static 'dist/css/tabulator_semanticui.min.css' %}" rel="stylesheet">
 
 <!-- Moment.js with locales -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
@@ -67,7 +69,7 @@
 					"month": parseInt(date_string.split('-')[1]),
 					"day": parseInt(date_string.split('-')[2])
 				}
-        return NepaliFunctions.ConvertDateFormat(  NepaliFunctions.AD2BS(nep_date_obj));
+        return NepaliFunctions.ConvertDateFormat(  NepaliFunctions.AD2BS(nep_date_obj)) || 1;
     };
 
 let currencyparams = {
@@ -177,9 +179,9 @@ const table{{id}} = new Tabulator("#example-table{{id}}", {
                     cell.getRow().toggleSelect();
                 }
             },
-            { title: "(मिति इ.स.)" , field:"date_eng", formatter:        'datetime',  formatterParams:{
-                inputFormat:"YYYY-MM-DD",
-                outputFormat:"DD/MM/YYYY",
+            { title: "(मिति इ.स.)" , field:"date_eng", formatter:'datetime',  formatterParams:{
+                inputFormat:"yyyy-MM-dd",
+                outputFormat:"dd/LL/yyyy",
                 invalidPlaceholder:"(invalid date)",
             }, hozAlign:"center"
             },
@@ -193,7 +195,12 @@ const table{{id}} = new Tabulator("#example-table{{id}}", {
         }
     ],
 });
-table{{id}}.setData(tabledata{{id}});
+table{{id}}.on("tableBuilt", function() {
+  // ✅ Safe to set data now
+  table{{id}}.setData(tabledata{{id}});
+});
+
+{% comment %} table{{id}}.setData(tabledata{{id}}); {% endcomment %}
 
 {% endfor %}
 
