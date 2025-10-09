@@ -46,10 +46,10 @@
         {% for  id in ids%}
         <div>
             {% comment %} <h2 style="text-align: center;">{{title}}</h2> {% endcomment %}
-            <table id="example-table{{id}}" style="width:1100px">
+            <table id="example-table{{id}}" style="width:1100px"></table>
         </div>
         {% endfor %}
-    </table>
+
     </div>
     <div>
         <button id="print-table">Print Table</button>
@@ -230,7 +230,20 @@ var sheets = {
     }
 
 downloadXlsx = function(){
-    table0.download("xlsx", "Data.xlsx", { sheets:sheets });
+    {% comment %} table0.download("xlsx", "Data.xlsx", { sheets:sheets }); {% endcomment %}
+     var wb = XLSX.utils.book_new();
+
+    // Convert Tabulator tables to sheet format 
+    {% for id in ids %}
+    var ws1 = XLSX.utils.json_to_sheet(table{{id}}.getData());
+    
+
+    // Append sheets to workbook
+    XLSX.utils.book_append_sheet(wb, ws1, "{{id}}");
+    {% endfor %}
+
+    // Download workbook
+    XLSX.writeFile(wb, "all_tables.xlsx");
 }
 
 document.getElementById("print-table").addEventListener("click", function(){
