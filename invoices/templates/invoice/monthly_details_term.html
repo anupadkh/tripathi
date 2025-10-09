@@ -236,7 +236,17 @@ downloadXlsx = function(){
     // Convert Tabulator tables to sheet format 
     {% for id in ids %}
     var ws1 = XLSX.utils.json_to_sheet(table{{id}}.getData());
-    
+    ws1["!cols"] = [
+        {wch:15}, // date_eng
+      {wch:15}, // date_nep
+      {wch:25}, // description
+      {wch:10}, // debit
+      {wch:5},  // id
+      {wch:20}, // customer
+      {wch:10}, // credit
+      {wch:15}  // balance
+    ];
+
 
     // Append sheets to workbook
     XLSX.utils.book_append_sheet(wb, ws1, "{{id}}");
