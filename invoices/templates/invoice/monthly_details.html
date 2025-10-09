@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
     <link href="{% static 'dist/css/tabulator.min.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
     <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
-    <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'dist/css/tabulator_semanticui.min.css' %}" rel="stylesheet">
     <style>
         @media print {
     {% comment %} body{
@@ -173,8 +174,11 @@ var table{{id}} = new Tabulator("#example-table{{id}}", {
         }
     ],
 });
-table{{id}}.setData(tabledata{{id}});
-
+{% comment %} table{{id}}.setData(tabledata{{id}}); {% endcomment %}
+table{{id}}.on("tableBuilt", function() {
+  // ✅ Safe to set data now
+  table{{id}}.setData(tabledata{{id}});
+});
 {% endfor %}
 
 {% for id in ids %}
