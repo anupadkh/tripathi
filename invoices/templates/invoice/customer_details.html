@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
+    <title>All Details:{{title}}</title>
     <link href="{% static 'dist/css/tabulator.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
@@ -11,6 +11,21 @@
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
     <script src="{% static '/js/xlsx.full.min.js' %}"></script>
     <style>
+    .buttonGroup{
+        display:block;
+        position: sticky;
+        height:50px;
+        top: 0;
+        overflow: hidden;
+        {% comment %} background-color: #333; {% endcomment %}
+        z-index:100;
+        text-align:center;
+    }
+    .buttonGroup button{
+        height:40px;
+        width: 200px;
+        font-size:16px;
+    }
     #printWindowScript {
             display: none;
         }
@@ -28,6 +43,9 @@
     #print-table{
         display:none;
        }
+    .buttonGroup{
+        display:none;
+    }
 
 }
     </style>
@@ -58,15 +76,17 @@
         <input id="filter-value" type="text" placeholder="Value To Filter">
     {% endcomment %}
     </div>
+    <div class="buttonGroup">
+        <button id="download-xlsx">Download Excel</button>
+        <button id="print-table">Print Table</button>
+    </div>
     <div id="print-area">
         <h1 style="text-align: center;">{{title}}</h1>
     <table id="example-table" style="width:900px">
     </table>
     </div>
-    <div>
-        <button id="print-table">Print Table</button>
-    </div>
-    <button id="download-xlsx">Download Excel</button>
+    
+    
 
     {% comment %}
     <form action="{% url 'members:sendsms' %}" method=GET id="formSend">
@@ -255,7 +275,7 @@ document.getElementById("print-table").addEventListener("click", function(){
             // console.log(a)
 });
 document.getElementById("download-xlsx").addEventListener("click", function(){
-    table.download("xlsx", "data.xlsx", {sheetName:"My Data"});
+    table.download("xlsx", "{{title}}.xlsx", {sheetName:"My Data"});
 });
 {% comment %}
 var fieldEl = document.getElementById("filter-field");

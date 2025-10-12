@@ -3,13 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
+    <title>Monthly Statement:{{page_title}}</title>
     <link href="{% static 'dist/css/tabulator.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'dist/js/tabulator.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'dist/js/moment-with-locales.js' %}"></script>
     <script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
     <link href="{% static '/dist/css/semantic-ui/tabulator_semantic-ui.min.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/xlsx.full.min.js' %}"></script>
     <style>
+    .buttonGroup{
+        display:block;
+        position: sticky;
+        height:50px;
+        top: 0;
+        overflow: hidden;
+        {% comment %} background-color: #333; {% endcomment %}
+        z-index:100;
+        text-align:center;
+    }
+    .buttonGroup button{
+        height:40px;
+        width: 200px;
+        font-size:16px;
+    }
         @media print {
     body{
         width: 21cm;
@@ -17,13 +33,19 @@
         margin: 10mm 10mm 10mm 10mm;
         /* change the margins as you want them to be. */
    }
-   #print-table{
+   .buttonGroup{
     display:none;
    }
+   
 }
     </style>
 </head>
 <body>
+    <div class="buttonGroup">
+        <button id="print-table">Print Table</button>
+        <button id="download-table" onclick="downloadXlsx()"> Download Table </button>
+    
+    </div>
     <div id="print-area">
         <h1 style="text-align: center;">{{page_title}}</h1>
         {% for  id in ids%}
@@ -34,9 +56,7 @@
         {% endfor %}
     </table>
     </div>
-    <div>
-        <button id="print-table">Print Table</button>
-    </div>
+    
 
     {% comment %}
     <form action="{% url 'members:sendsms' %}" method=GET id="formSend">
@@ -64,6 +84,33 @@ let currencyparams = {
 
 function total(values, data){
   return "TOTAL";
+}
+
+downloadXlsx = function(){
+    {% comment %} table0.download("xlsx", "Data.xlsx", { sheets:sheets }); {% endcomment %}
+     var wb = XLSX.utils.book_new();
+
+    // Convert Tabulator tables to sheet format 
+    {% for id in ids %}
+    var ws1 = XLSX.utils.json_to_sheet(table{{id}}.getData());
+    ws1["!cols"] = [
+        {wch:15}, // date_eng
+      {wch:15}, // date_nep
+      {wch:25}, // description
+      {wch:10}, // debit
+      {wch:5},  // id
+      {wch:20}, // customer
+      {wch:10}, // credit
+      {wch:15}  // balance
+    ];
+
+
+    // Append sheets to workbook
+    XLSX.utils.book_append_sheet(wb, ws1, "{{id}}");
+    {% endfor %}
+
+    // Download workbook
+    XLSX.writeFile(wb, "{{page_title}}.xlsx");
 }
 
 function final(values, data){
