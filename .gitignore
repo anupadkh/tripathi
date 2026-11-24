@@ -8,3 +8,5 @@ invoices/__pycache__/admin.cpython-38.pyc
 .DS_Store
 # remove cached files
 # git rm -r --cached .
+desktop
+.desktop-*
