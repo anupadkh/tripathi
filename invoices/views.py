@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils import timezone
 import nepali_datetime
 from .models import *
 from .serializer import *
@@ -130,8 +131,14 @@ def index(request, id=None, cs_id=None):
         "due" : due,
         "inv_no": invoice_no.num ,
         }
+        bill_date = invoice.date or timezone.localdate()
+        context['bill_date_ad'] = bill_date.isoformat()
+        context['bill_date_bs'] = NepDate.date.from_datetime_date(bill_date).isoformat()
         return render(request, 'invoice/index.html', context)
 
+    bill_date = invoice.date or timezone.localdate()
+    context['bill_date_ad'] = bill_date.isoformat()
+    context['bill_date_bs'] = NepDate.date.from_datetime_date(bill_date).isoformat()
     return render(request, 'invoice/index.html', context)
 
 

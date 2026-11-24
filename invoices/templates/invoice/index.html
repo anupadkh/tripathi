@@ -5,60 +5,43 @@
 		<title>Invoice</title>
 		<link rel="stylesheet" href="{% static 'style.css' %}">
 		<link rel="license" href="https://www.opensource.org/licenses/mit-license/">
-		<link href="{% static 'nepali.datepicker.v3.2.min.css' %}" rel="stylesheet" type="text/css"/>
+		<link href="{% static 'nepali.datepicker.v5.0.6.min.css' %}" rel="stylesheet" type="text/css"/>
 		<script src="{% static 'run.js' %}"></script>
-		<script src="{% static 'nepali.datepicker.v3.2.min.js' %}" type="text/javascript"></script>
+		<script src="{% static 'nepali.datepicker.v5.0.6.min.js' %}" type="text/javascript"></script>
 	</head>
 	<body>
 		<script type="text/javascript">
 			function convert(){
-				console.log("registered Change");
 				var input = document.getElementById('nepali-datepicker');
-				nep_date_obj = {
-					"year": parseInt(input.value.split('-')[0]),
-					"month": parseInt(input.value.split('-')[1]),
-					"day": parseInt(input.value.split('-')[2])
+				var engDate = document.getElementById('engdate');
+				if (input.value === input.defaultValue) {
+					input.setCustomValidity('');
+					engDate.value = engDate.defaultValue;
+					return true;
 				}
-				var eng_place = document.getElementById('engdate');
-				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
+				var parts = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(input.value.trim());
+				var bs = parts && {year: Number(parts[1]), month: Number(parts[2]), day: Number(parts[3])};
+				if (!bs || bs.year < 2000 || bs.year > 2099 || !NepaliFunctions.BS.ValidateDate(bs)) {
+					engDate.value = '';
+					input.setCustomValidity('Enter a valid Nepali date in YYYY-MM-DD format.');
+					input.reportValidity();
+					return false;
+				}
+				input.setCustomValidity('');
+				engDate.value = NepaliFunctions.BS2AD(bs, 'YYYY-MM-DD');
+				return true;
 			}
 			window.onload = function() {
-				// var inputs = document.getElementsByClassName('nepali-datepicker');
-				var input = document.getElementById('nepali-datepicker');
-				input.nepaliDatePicker();
-				today = NepaliFunctions.GetCurrentBsDate();
-				var eng_place = document.getElementById('engdate');
-				var date_system = "{{ invoice.date | date:'Y-m-d' | default_if_none:''}}";
-				{% if invoice.date %}
-				if (date_system !== ""){
-					today = NepaliFunctions.AD2BS({
-						"year": {{invoice.date | date:'Y'}},
-						"month": {{invoice.date | date:'m'}},
-						"day":{{invoice.date | date:'d'}}
-					});
-				}
+				{% if unsaved %}
+				document.getElementById('nepali-datepicker').NepaliDatePicker({onSelect: convert});
 				{% endif %}
-				if (input.value == "" & eng_place.value == ""){
-					input.value = NepaliFunctions.ConvertDateFormat(today);
-				}
-				nep_date_obj = {
-					"year": parseInt(input.value.split('-')[0]),
-					"month": parseInt(input.value.split('-')[1]),
-					"day": parseInt(input.value.split('-')[2])
-				}
-				var eng_place = document.getElementById('engdate');
-				eng_place.value = NepaliFunctions.ConvertDateFormat( NepaliFunctions.BS2AD(nep_date_obj));
-
-				// for (var i = 0; i < inputs.length; i++) {
-				// 	inputs[i].nepaliDatePicker();
-				// }
 				{% if unsaved == False %} if (window.print()){
 					location.replace("{% url 'invoices:index_id' id=invoice.id %}");
 				};
 				{% endif %}
 			}
 			function beforeSubmit(){
-				convert();
+				if (!convert()) return false;
 				invoice = document.getElementById("invoice");
 
 				invoice_details = JSON.parse(invoice.value)
@@ -106,8 +89,8 @@
 				<tr>
 					<th><span contenteditable>Date</span></th>
 
-					<td><input id="nepali-datepicker" onchange="convert();" /></td>
-					<td><input id="engdate"/>{% if unsaved %}
+					<td><input id="nepali-datepicker" value="{{ bill_date_bs }}" {% if unsaved %}onchange="convert();"{% else %}readonly{% endif %} /></td>
+					<td><input id="engdate" value="{{ bill_date_ad }}" readonly/>{% if unsaved %}
 						<button onclick="convert()">EngDate</button>
 						{% endif%}</td>
 				</tr>
