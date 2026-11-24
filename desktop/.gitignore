@@ -1,0 +1,4 @@
+node_modules/
+dist/
+smoke-result.txt
+integration-preview.png

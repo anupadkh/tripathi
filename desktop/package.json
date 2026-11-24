@@ -1,0 +1,40 @@
+{
+  "name": "tripathi-desktop",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Tripathi Foam Industries desktop operations workspace",
+  "author": "Tripathi Foam Industries",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check api-client.js && node --check renderer.js && node --check modules.js",
+    "dist": "electron-builder --win nsis",
+    "smoke": "electron smoke.cjs",
+    "test": "node --test api-client.test.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "prettier": "3.9.9"
+  },
+  "build": {
+    "appId": "com.tripathi.operations",
+    "productName": "Tripathi Operations",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "api-client.js",
+      "modules.js"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

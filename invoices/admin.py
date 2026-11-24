@@ -36,9 +36,10 @@ class PaymentInline(admin.TabularInline):
         return
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
+        qs = super().get_queryset(request).filter(receipt__isnull=True)
         UserMode = apps.get_model('invoices', model_name='UserSystem')
-        if UserMode.objects.get(user=request.user).default_term == 1:
+        profile = UserMode.objects.filter(user=request.user).first()
+        if profile is None or profile.default_term == 1:
             return qs
 
         a,b, object_id = resolve(request.path)
@@ -55,11 +56,22 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     extra = 0
     show_change_link = True
     inline_actions = ['view']
-    readonly_fields = ['Invoice', 'nep_date']
+    readonly_fields = ['Invoice', 'nep_date', 'is_posted', 'to_pay', 'total']
     ordering = ('-date',)
     classes = ["tab-invoice-inline","collapse"]
 
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def url(self,obj):
+        if obj.source == 'api':
+            return reverse('invoices-pdf', kwargs={'pk': obj.pk})
         if obj.id:
             return reverse('invoices:index_id', kwargs={"id": obj.id})
         else:
@@ -85,7 +97,8 @@ class InvoiceInline(admin.TabularInline, InlineActionsMixin):
     def get_queryset(self, request):
         qs = super(InvoiceInline, self).get_queryset(request).filter(is_vat=False)
         UserMode = apps.get_model('invoices', model_name='UserSystem')
-        if UserMode.objects.get(user=request.user).default_term == 1:
+        profile = UserMode.objects.filter(user=request.user).first()
+        if profile is None or profile.default_term == 1:
             return qs
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
@@ -106,12 +119,14 @@ class VatInline(InvoiceInline):
     verbose_name = "VAT"
     verbose_name_plural = "VAT Invoices"
     fields = ('Invoice','nep_date','is_posted', 'total','to_pay', 'tax', 'vat_bill_no')
+    readonly_fields = InvoiceInline.readonly_fields + ['tax', 'vat_bill_no']
 
     def get_queryset(self, request):
         qs = super(InvoiceInline, self).get_queryset(request)
         qs = qs.filter(is_vat=True)
         UserMode = apps.get_model('invoices', model_name='UserSystem')
-        if UserMode.objects.get(user=request.user).default_term == 1:
+        profile = UserMode.objects.filter(user=request.user).first()
+        if profile is None or profile.default_term == 1:
             return qs
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
@@ -132,7 +147,8 @@ class OpeningInline(admin.TabularInline):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         UserMode = apps.get_model('invoices', model_name='UserSystem')
-        if UserMode.objects.get(user=request.user).default_term == 1:
+        profile = UserMode.objects.filter(user=request.user).first()
+        if profile is None or profile.default_term == 1:
             return qs
         a,b, object_id = resolve(request.path)
         op_bal = apps.get_model('invoices', model_name='OpeningBalance')
@@ -158,10 +174,20 @@ class MyInvoiceAdmin(admin.ModelAdmin):
     def has_add_permission(self, request, obj=None):
         return False
 
+    def has_change_permission(self, request, obj=None):
+        if obj and (obj.is_posted or obj.source == 'api'):
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     def Bill(self, obj):
         return mark_safe("<a href=\"%s\"> View </a>" % self.url(obj) )
 
     def url(self,obj):
+        if obj.source == 'api':
+            return reverse('invoices-pdf', kwargs={'pk': obj.pk})
         if obj.id:
             return reverse('invoices:index_id', kwargs={"id": obj.id})
         else:
@@ -232,7 +258,7 @@ for x in apps.get_models():
 
 
         for r in allowed_list:
-            if r in str(x):
+            if x._meta.app_label == 'invoices' and r == x.__name__:
                 try:
                     admin.site.register(x)
                 except:
@@ -246,24 +272,22 @@ class TermAdmin(admin.ModelAdmin):
     readonly_fields = ('total_due', 'total_sales', 'see_monthly_details', 'total_vat_sales', 'see_monthly_vat_details')
 
     def total_due(self, obj):
-        balances = OpeningBalance.objects.filter(term=obj)
-        total_due_amount = 0
-        for x in balances:
-            total_due_amount += x.amount
-        for y in Payment.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte=obj.end_date) & Q(Q(term=obj) | Q(term__isnull=True))):
-            total_due_amount += y.amount
-        total_due_amount = float(self.total_sales(obj).replace(',',"" ).replace('NPR','')) -  total_due_amount
+        from operations.services import total
+        opening = total(OpeningBalance.objects.filter(term=obj), 'amount')
+        sales = total(Invoice.objects.filter(status='posted', date__range=(obj.start_date, obj.end_date)), 'to_pay')
+        payments = total(Payment.objects.filter(Q(date__range=(obj.start_date, obj.end_date), term__isnull=True) | Q(term=obj)), 'amount')
+        total_due_amount = opening + sales - payments
         return "NPR {:,.2f}".format(total_due_amount)
 
     def total_sales(self, obj):
-        balances = Invoice.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=False))
+        balances = Invoice.objects.filter(status='posted').filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=False))
         total_sales_amount = 0
         for x in balances:
             total_sales_amount += x.total
         return "NPR {:,.2f}".format(total_sales_amount)
 
     def total_vat_sales(self, obj):
-        balances = Invoice.objects.filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=True))
+        balances = Invoice.objects.filter(status='posted').filter(Q(date__gte=obj.start_date) & Q(date__lte = obj.end_date) & Q(is_vat=True))
         total_sales_amount = 0
         for x in balances:
             total_sales_amount += x.total

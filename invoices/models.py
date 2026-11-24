@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 # from nepali_date.date import NepaliDate
 import nepali_datetime as NepDate
 from django.db.models import CheckConstraint, Q, F
+from django.urls import reverse
+from decimal import Decimal
 # Create your models here.
 
 class ContactPerson(models.Model):
@@ -30,7 +32,7 @@ class CustomerMeta(models.Model):
 class Customer(CustomerMeta):
 
     def addInvoice(self):
-        return "<a class=\"button\" href=\"%s\" target='_blank'>Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":pk})
+        return "<a class=\"button\" href=\"%s\" target='_blank'>Add Invoice</a>" % reverse('invoices:index_id_csid', kwargs={"id": 0, "cs_id":self.pk})
 
     # @property
     def remaining_pay(self):
@@ -88,18 +90,26 @@ class Customer(CustomerMeta):
 
 
 class Invoice(models.Model):
-    issued_for = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    issued_for = models.ForeignKey(Customer, on_delete=models.PROTECT, null=True, blank=True)
     issued_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     is_posted = models.BooleanField(default=False)
-    total = models.FloatField(null=True, blank=True)
-    tax = models.FloatField(null=True, blank=True)
-    paid_amount = models.FloatField(null=True, blank=True, default=0)
+    total = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    tax = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    paid_amount = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True, default=0)
     date = models.DateField(null=True, blank=True)
-    to_pay = models.FloatField(null=True, blank=True, default=0)
-    discount = models.FloatField(null=True, blank=True, default=0)
+    to_pay = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True, default=0)
+    discount = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True, default=0)
     notes = models.TextField(blank=True, null=True)
     vat_bill_no = models.CharField( verbose_name="Bill No" ,null=True, blank=True, max_length=500)
     is_vat = models.BooleanField(default=False)
+    status = models.CharField(max_length=12, default='draft', choices=[(s, s) for s in ('draft', 'grouped', 'posted', 'cancelled')])
+    source = models.CharField(max_length=12, default='legacy', editable=False)
+    revision = models.PositiveIntegerField(default=1)
+    fiscal_year = models.ForeignKey('Term', null=True, blank=True, on_delete=models.PROTECT)
+    number = models.CharField(max_length=80, null=True, blank=True, unique=True)
+    vat_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('13.00'))
+    cancellation_reason = models.TextField(blank=True, default='')
+    credit_bank_name = models.CharField(max_length=100, blank=True, default='')
 
     def __str__(self):
         try:
@@ -111,12 +121,11 @@ class Invoice(models.Model):
                 return self.total
 
     def save(self, *args, **kwargs):
-        if self.vat_bill_no != '' or self.vat_bill_no is None:
-            self.is_vat = True
-            # self.paid_amount = self.total
-            # self.to_pay = 0
-        else:
-            self.is_vat = False
+        if self.source == 'legacy':
+            if self._state.adding or not self.is_posted:
+                self.is_vat = bool(self.vat_bill_no and self.vat_bill_no.strip())
+            if self.is_posted and self.status != 'cancelled':
+                self.status = 'posted'
         super(Invoice, self).save(*args, **kwargs)
 
 
@@ -127,11 +136,12 @@ class Items(models.Model):
     breadth =models.FloatField(null=True, blank=True)
     height = models.FloatField(null=True, blank=True)
     mm = models.FloatField(null=True, blank=True)
-    rate = models.FloatField(null=True, blank=True)
+    rate = models.DecimalField(max_digits=18, decimal_places=4, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    calculated_rate = models.FloatField()
-    qty = models.FloatField(null=True, blank=True)
-    price = models.FloatField(null=True, blank=True)
+    calculated_rate = models.DecimalField(max_digits=18, decimal_places=4)
+    qty = models.DecimalField(max_digits=18, decimal_places=4, null=True, blank=True)
+    price = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    unit = models.CharField(max_length=20, default='piece')
     taxable = models.BooleanField()
     tax_include = models.BooleanField()
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
@@ -149,8 +159,8 @@ class UserSystem(models.Model):
     billing_term = models.ForeignKey('invoices.Term', on_delete=models.SET_NULL, null=True, blank=True)
 
 class Payment(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    amount = models.FloatField()
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    amount = models.DecimalField(max_digits=18, decimal_places=2)
     payment_mode = models.IntegerField(choices=((1, "Cheque"), (2, "Cash"), (3,"Bank Transfer"), (4, "Internet Payment"), (5, "Transport"), (6, "Bank Deposit"), (7, "Goods Returned"), (8, "Discount")))
     date = models.DateField(null=True, blank=True)
     nepali_date = models.CharField(blank=True, max_length=20, default="")
@@ -184,7 +194,7 @@ class Term(models.Model):
 
 class OpeningBalance(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    amount = models.FloatField("Opening Balance",) # blank=True, null=True)
+    amount = models.DecimalField("Opening Balance", max_digits=18, decimal_places=2)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
 
 
@@ -263,6 +273,11 @@ class OpeningBalance(models.Model):
 class InvoiceCounter(models.Model):
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['term'], name='unique_invoice_counter_term'),
+        ]
 
 class InvNum(models.Model):
     invoice = models.OneToOneField(Invoice, on_delete = models.CASCADE)

@@ -1,10 +1,8 @@
-django_rest_framework
-django-admin-row-actions
-django-inline-actions
-django-admin-tools
-django-material-admin
-# nepali_date
-django-jazzmin
-nepali-datetime
-pandas
-
+Django==5.2.18
+djangorestframework==3.18.3
+django-inline-actions==3.0.0
+nepali-datetime==1.0.8.5
+pandas==3.0.6
+drf-spectacular==0.30.0
+reportlab==5.0.1
+psycopg[binary]==3.3.6

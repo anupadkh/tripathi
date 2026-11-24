@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'filyggaf^!o))u-+h!xauig3lps@5+w6z8a8)8t(jkc^0==n^#'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'local-development-only-tripathi-change-before-deployment')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+if not DEBUG and not os.environ.get('DJANGO_SECRET_KEY'):
+    raise ImproperlyConfigured('DJANGO_SECRET_KEY is required when DJANGO_DEBUG=0')
 
-ALLOWED_HOSTS = ['192.168.18.224', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,192.168.18.224').split(',')
 from .jazzmin_settings import *
 
 
@@ -38,8 +42,7 @@ INSTALLED_APPS = [
     # 'image_cropping',
     # 'django_ajax',
     # 'cruds_adminlte',
-    'material',
-    'material.admin',
+    'django.contrib.admin',
     # 'jazzmin',
 
     # 'material.admin.default',
@@ -55,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'invoices',
     'rest_framework',
+    'drf_spectacular',
+    'operations',
     # 'django_admin_row_actions',
     "inline_actions",
 ]
@@ -98,9 +103,38 @@ WSGI_APPLICATION = 'foam_industry.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('DJANGO_DB_PATH', BASE_DIR / 'db.sqlite3'),
+        'OPTIONS': {'timeout': 20, 'transaction_mode': 'IMMEDIATE'},
     }
 }
+
+if os.environ.get('POSTGRES_DB'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', ''),
+        'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+    }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ['operations.authentication.ExpiringTokenAuthentication', 'rest_framework.authentication.SessionAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+    'DEFAULT_RENDERER_CLASSES': ['operations.renderers.DecimalJSONRenderer'],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'EXCEPTION_HANDLER': 'operations.api_errors.exception_handler',
+    'DEFAULT_THROTTLE_RATES': {'login': '10/min'},
+}
+SPECTACULAR_SETTINGS = {'TITLE': 'Tripathi Operations API', 'VERSION': '1.0.0', 'SERVE_INCLUDE_SCHEMA': False, 'ENUM_NAME_OVERRIDES': {'DocumentStatusEnum': ['draft','posted','cancelled'], 'InvoiceStatusEnum': ['draft','grouped','posted','cancelled']}}
+API_TOKEN_HOURS = int(os.environ.get('API_TOKEN_HOURS', '8'))
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # Password validation

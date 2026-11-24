@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; img-src 'self' data:"
+    />
+    <title>Tripathi Operations</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <aside>
+      <div class="brand">
+        <span class="logo">T</span>
+        <div>TRIPATHI<small>FOAM INDUSTRIES</small></div>
+      </div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav id="navigation"></nav>
+      <div class="sidebar-footer">
+        Factory & finance<br /><small>Operations desktop · v0.2</small>
+      </div>
+    </aside>
+    <main>
+      <header>
+        <span id="workspace-title">Operations workspace</span>
+        <div class="header-actions">
+          <span id="session-name"></span
+          ><span class="badge" id="connection-badge">SIGNED OUT</span
+          ><button class="secondary" id="logout" hidden>Sign out</button>
+        </div>
+      </header>
+      <div id="connection-notice" class="connection-notice" role="status"></div>
+      <section id="content"></section>
+    </main>
+    <dialog id="modal"><div id="modal-content"></div></dialog>
+    <div id="toast" role="status"></div>
+    <script src="renderer.js"></script>
+    <script src="modules.js"></script>
+  </body>
+</html>

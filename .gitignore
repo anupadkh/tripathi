@@ -1,4 +1,10 @@
 db.sqlite3
+.venv/
+db2.sqlite3
+test_*.sqlite3
+migration-check*.sqlite3
+__pycache__/
+.env
 *.pyc
 invoices/__pycache__/*
 atomic*
@@ -8,3 +14,5 @@ invoices/__pycache__/admin.cpython-38.pyc
 .DS_Store
 # remove cached files
 # git rm -r --cached .
+
+.desktop-smoke-*/

@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.utils import timezone
 import nepali_datetime
 from .models import *
 from .serializer import *
@@ -19,129 +18,48 @@ def sanitize_floats(x):
         return x
 
 
+from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
+from .services import save_legacy_invoice
+
+@login_required
 def index(request, id=None, cs_id=None):
-    # Set the counters
-    inv_no, status = InvoiceCounter.objects.get_or_create(term=request.user.usersystem.billing_term)
-    invoice_no = InvNum()
-    invoice_no.num = inv_no.count + 1
-
-    if id==0 :
-        customer = Customer.objects.get(id=cs_id)
+    if id == 0 and cs_id:
+        if not request.user.has_perm('invoices.add_invoice'):
+            return HttpResponseForbidden('Invoice creation permission is required.')
+        customer = Customer.objects.get(pk=cs_id)
         invoice = Invoice(issued_for=customer)
-        due = round(customer.arthik_remaining_pay(end_date=invoice.date), 2)
-
-
-        if request.method=="POST":
-            invoice.save()
-            id = invoice.id
-            inv_no.count += 1
-            inv_no.save()
-            invoice_no, status = InvNum.objects.get_or_create(invoice=invoice)
-            invoice_no.num = inv_no.count
-            invoice_no.save()
-
-
-    else:
-        invoice = Invoice.objects.get(id=id)
+    elif id:
+        invoice = Invoice.objects.select_related('issued_for').get(pk=id)
         customer = invoice.issued_for
-        due = round(customer.arthik_remaining_pay(end_date=invoice.date), 2)
-        invoice_no, status = InvNum.objects.get_or_create(invoice=invoice)
-        if status: # For Old Invoices
-            invoice_no.num = invoice.id
-            invoice_no.save()
-            inv_no.count += 1
-            inv_no.save()
-    if cs_id:
-        customer = Customer.objects.get(id=cs_id)
-        due = round(customer.arthik_remaining_pay(end_date=None), 2)
+        if not request.user.has_perm('invoices.view_invoice'):
+            return HttpResponseForbidden('Invoice viewing permission is required.')
     else:
-        customer = invoice.issued_for
-    user = request.user
-    try:
-        owner = Owner.objects.get(usersystem__user = user)
-    except:
-        owner = None
-
-    items = Items.objects.filter(invoice=invoice)
-    context = {
-        "inv_no": invoice_no.num ,
-        "id" : id,
-        "invoice": invoice,
-        "user": user,
-        "owner": owner,
-        "items": items,
-        "customer" : customer,
-        "unsaved": True,
-        "due" : due
-        }
-    if request.method == "POST":
-        data = request.POST
-        items_post = json.loads(data['items'])
-        invoiceDetails = json.loads(data['invoice'])
-        invoice.issued_by = user
+        return HttpResponseBadRequest('Choose a customer or an invoice from the admin.')
+    if invoice.source == 'api':
+        return HttpResponseForbidden('Use the desktop/API to view this invoice; the legacy form uses different quantity calculations.')
+    user_system = UserSystem.objects.filter(user=request.user).first()
+    year = invoice.fiscal_year or (user_system.billing_term if user_system else None)
+    if request.method == 'POST':
+        permission = 'invoices.change_invoice' if invoice.pk else 'invoices.add_invoice'
+        if not request.user.has_perm(permission):
+            return HttpResponseForbidden('Invoice write permission is required.')
         try:
-            invoice.total = invoiceDetails['total']
-            invoice.tax = invoiceDetails['tax']
-            invoice.paid_amount = invoiceDetails['paid']
-            invoice.date = invoiceDetails['date']
-            invoice.discount = invoiceDetails['discount']
-            invoice.notes = invoiceDetails['notes']
-            invoice.is_posted = True
-            invoice.vat_bill_no = invoiceDetails['vat']
-            invoice.to_pay = invoiceDetails['to_pay']
-            invoice.save()
-            invoice = Invoice.objects.get(id=invoice.id)
-        except:
-            context["errors"]= "Error in Details of Invoice"
-            return(request, 'invoice/index.html', context)
-
-        already_saved_ids = items.values_list('id', flat=True)
-        saved_items_id = []
-        for posted_item in items_post:
-            posted_item['invoice'] = invoice.id
-            if posted_item['id'] == "":
-                item_save = ItemSerializer(data=posted_item)
-            else:
-                item_saved = Items.objects.get(id=posted_item["id"])
-                item_save = ItemSerializer(instance=item_saved, data=posted_item)
-            if item_save.is_valid():
-                item_saved = item_save.save()
-            else:
-                context.update({
-                        "errors":"Error in Item " + posted_item['description'],
-                        "invoice": invoice,
-                    })
-                return(request, 'invoice/index.html', context)
-
-            saved_items_id.append(item_saved.id)
-
-        to_delete = list(
-            set(already_saved_ids) - set(saved_items_id)
-        )
-        Items.objects.filter(id__in = to_delete).delete()
-        items = Items.objects.filter(invoice=invoice)
-        context = {
-        "id" : id,
-        "invoice": invoice,
-        "user": user,
-        "owner": owner,
-        "items": items,
-        "customer" : customer,
-        "unsaved": False,
-        "due" : due,
-        "inv_no": invoice_no.num ,
-        }
-        bill_date = invoice.date or timezone.localdate()
-        context['bill_date_ad'] = bill_date.isoformat()
-        context['bill_date_bs'] = NepDate.date.from_datetime_date(bill_date).isoformat()
-        return render(request, 'invoice/index.html', context)
-
+            invoice = save_legacy_invoice(invoice, year, request.user, json.loads(request.POST['items']), json.loads(request.POST['invoice']))
+        except (ValidationError, ValueError, KeyError) as error:
+            return HttpResponseBadRequest(str(error))
+    invnum = InvNum.objects.filter(invoice=invoice).first() if invoice.pk else None
+    owner = Owner.objects.filter(usersystem__user=request.user).first()
+    context = {'inv_no': invnum.num if invnum else 'Draft', 'id': invoice.pk or 0, 'invoice': invoice, 'user': request.user, 'owner': owner, 'items': invoice.items_set.all() if invoice.pk else [], 'customer': customer, 'unsaved': not invoice.is_posted, 'due': customer.arthik_remaining_pay(end_date=invoice.date)}
     bill_date = invoice.date or timezone.localdate()
     context['bill_date_ad'] = bill_date.isoformat()
     context['bill_date_bs'] = NepDate.date.from_datetime_date(bill_date).isoformat()
     return render(request, 'invoice/index.html', context)
 
-
+@login_required
+@permission_required(('invoices.view_invoice','invoices.view_payment','invoices.view_openingbalance'),raise_exception=True)
 def customer_details(request,id, vat=False):
     openBal = OpeningBalance.objects.get(id=id)
 
@@ -161,6 +79,8 @@ def customer_details(request,id, vat=False):
     return render (request, 'invoice/customer_details.html', context=context)
 
 
+@login_required
+@permission_required(('invoices.view_invoice','invoices.view_payment','invoices.view_openingbalance'),raise_exception=True)
 def monthly_details(request, id, term, vat=False):
     customer = Customer.objects.get(id =id)
     opening = OpeningBalance.objects.get(term__id = term, customer = customer)
@@ -191,14 +111,14 @@ def monthly_details(request, id, term, vat=False):
 
         year_calendar = all_calendar.loc[current_year]
         titles.append('%s:%s' % (current_year, year_calendar.index[current_month-1]))
-        month_days = int(year_calendar[current_month-1])
-        prev_month_days = int(year_calendar[prev_month-1])
+        month_days = int(year_calendar.iloc[current_month-1])
+        prev_month_days = int(year_calendar.iloc[prev_month-1])
 
         start_day = NepDate.date(prev_year, prev_month, prev_month_days).to_datetime_date()
         end_day = NepDate.date(current_year, current_month, month_days).to_datetime_date()
         opening_dates.append(start_day)
         monthly_opening = opening.amount + sum(opening.sales_until(start_day)) - sum(opening.payments_until(start_day))
-        monthly_invoices = Invoice.objects.filter(
+        monthly_invoices = Invoice.objects.filter(status='posted').filter(
             Q(date__gte = start_day) & Q(date__lte = end_day) & Q(issued_for=customer)
         )
         if vat:
@@ -238,6 +158,8 @@ def update_loop(i, current_month, current_year, nep_end):
     return i, current_month, current_year
 
 
+@login_required
+@permission_required(('invoices.view_invoice','invoices.view_payment','invoices.view_openingbalance'),raise_exception=True)
 def term_monthly_details(request, term, vat=False):
     opening_bals = OpeningBalance.objects.filter(term__id = term)
     opening_term = Term.objects.get(id=term)
@@ -270,13 +192,13 @@ def term_monthly_details(request, term, vat=False):
 
         year_calendar = all_calendar.loc[current_year]
         titles.append('%s:%s' % (current_year, year_calendar.index[current_month-1]))
-        month_days = int(year_calendar[current_month-1])
-        prev_month_days = int(year_calendar[prev_month-1])
+        month_days = int(year_calendar.iloc[current_month-1])
+        prev_month_days = int(year_calendar.iloc[prev_month-1])
 
         start_day = NepDate.date(current_year, current_month, 1).to_datetime_date()
         end_day = NepDate.date(current_year, current_month, month_days).to_datetime_date()
         opening_dates.append(start_day)
-        monthly_invoices = Invoice.objects.filter(
+        monthly_invoices = Invoice.objects.filter(status='posted').filter(
             Q(date__gte = start_day) & Q(date__lte = end_day)
         ).prefetch_related('issued_for')
         monthly_payments = Payment.objects.filter(
