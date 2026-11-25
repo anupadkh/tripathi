@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'invoices',
     'rest_framework',
     # 'django_admin_row_actions',
-    "inline_actions",
 ]
 
 MIDDLEWARE = [

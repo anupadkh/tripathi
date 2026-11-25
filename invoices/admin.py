@@ -5,7 +5,6 @@ from django.urls import reverse, resolve
 from django.conf import settings
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
-from inline_actions.admin import InlineActionsMixin
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
@@ -49,12 +48,11 @@ class PaymentInline(admin.TabularInline):
         except:
             return qs
 
-class InvoiceInline(admin.TabularInline, InlineActionsMixin):
+class InvoiceInline(admin.TabularInline):
     model = apps.get_model('invoices', model_name='Invoice')
     fields = ('Invoice','nep_date','is_posted', 'to_pay', 'total',)
     extra = 0
     show_change_link = True
-    inline_actions = ['view']
     readonly_fields = ['Invoice', 'nep_date']
     ordering = ('-date',)
     classes = ["tab-invoice-inline","collapse"]
@@ -150,7 +148,6 @@ class InvoiceNumInline(admin.TabularInline):
 @admin.register(apps.get_model('invoices', model_name='Invoice'))
 class MyInvoiceAdmin(admin.ModelAdmin):
     model = apps.get_model('invoices', model_name='Invoice')
-    inline_actions = ['view']
     list_display = ('date','issued_for','is_posted', 'to_pay', 'total',)
     readonly_fields = ( 'Bill',)
     inlines=[InvoiceNumInline,]
